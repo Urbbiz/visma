@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require __DIR__ . '/bootstrap.php';
+require_once (__DIR__ .'/Syllable/Api/Router.php');
 
 use  Syllable\App\Application;
 use  Syllable\Api\Router;
@@ -10,29 +11,38 @@ use  Syllable\Api\Router;
 
 //print_r(PDO::getAvailableDrivers());
 
-echo "<h1>ar kas nors veikia?</h1>";
-echo "<h1>pradesim daryti routeri?</h1>";
 
-$router = new Router();
+//
+//
+//
+//$router = new Router();
+//
+//$router->get('/visma-task/', function () {
+//    echo 'Home page is here';
+//});
+//
+//$router->get('/visma-task/about', function () {
+//    echo 'About page';
+//
+//});
+//
+//$router->addNotFoundHandler(function (){
+//    echo 'not found';
+//});
+//
+//$router ->run();
+//
+//
+//
+//echo "<h1>hello World!!!</h1>";
 
-$router->get('/visma-task/', function () {
-    echo 'Home page is here';
-});
 
-$router->get('/visma-task/about', function () {
-    echo 'About page';
-});
+//if(empty($_SERVER['REQUEST_URI'])) {
+//    $runApp = new Application();
+//    $runApp->runApp();
+//}
 
-$router->addNotFoundHandler(function (){
-    echo 'not found';
-});
-
-$router ->run();
-
-
-
-echo "<h1>hello World!!!</h1>";
-
+echo "<h1>Index page</h1>";
 
 $runApp = new Application();
 $runApp->runApp();

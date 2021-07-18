@@ -1,15 +1,17 @@
-DirectoryIndex index.php
+DirectoryIndex main.php
 
 #enable apache rewrite engine
 RewriteEngine on
 
 #set your rewrite base
 #edit this in your init method too if your script lives in subfolder
-RewriteBase /visma-task
+RewriteBase /visma-task/main.php
 
 #Deliver the folder or file directly if it exists on the server
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
 #Push every request to index.php
-RewriteRule ^(.*)$ index.php [QSA]
+RewriteRule ^(.*)$ main.php [QSA]
+
+#RewriteRule ^([^/]+)/? main.php?url=$1  [L,QSA]

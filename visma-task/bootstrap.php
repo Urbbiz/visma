@@ -2,8 +2,8 @@
 
 session_start();
 
-define('INSTALL_DIR', '/home/internalandriusurbonas/php/visma-pirmas/');
-define('DIR', __DIR__ . 'bootstrap.php/');   //constants case sensitive
+//define('INSTALL_DIR', '/home/internalandriusurbonas/php/visma-pirmas/');
+define('DIR', __DIR__ . '/');   //constants case sensitive
 
 
 spl_autoload_register(
