@@ -18,7 +18,7 @@ use  Syllable\Api\Router;
 //$router = new Router();
 //
 //$router->get('/visma-task/', function () {
-//    echo 'Home page is here';
+//    echo 'DeleteData page is here';
 //});
 //
 //$router->get('/visma-task/about', function () {

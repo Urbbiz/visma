@@ -95,40 +95,7 @@ class Application
 
         }elseif ($input == 3){
 
-$patternsCollection = $databaseManager->getAllPatterns();
-
-if(count($patternsCollection->getPatterns())==0) {
-    $databaseManager->setPatternsToDatabase(DIR . "data/inputfile.txt");
-}
-
-                $databaseManager->getAllPatterns();
-            $givenWord = $userInput->getInputWord();  // paduoda ivesta zodi
-
-            $wordInDatabase = $databaseManager->getWord($givenWord);
-
-            if($wordInDatabase !=false){
-//                Echo $wordInDatabase['syllableValue'];
-                $result = new SyllableResult();
-                $result->dashResult= $wordInDatabase['syllableValue'];
-                $id = $wordInDatabase['id'];
-                $result->matchedPatterns = $databaseManager->getRelatedPatterns($id);
-
-                var_dump($result);
-
-            }else {
-                $patternsCollection = $databaseManager->getAllPatterns();
-                $syllableResult = $SyllableAlgorithm->syllable($givenWord, $patternsCollection);
-                $databaseManager->addWord($givenWord, $syllableResult->dashResult);
-                $wordInDatabase = $databaseManager->getWord($givenWord);
-                var_dump($wordInDatabase);
-                $id = $wordInDatabase['id'];
-                $patternIds= $databaseManager->getPatternIds($syllableResult->matchedPatterns);
-                var_dump($patternIds);
-                $databaseManager->addRelatedPatterns($id,$patternIds);
-                var_dump($syllableResult);
-            }
-
-
+            var_dump($SyllableAlgorithm->syllableUsingDataBase($userInput->getInputWord()));
         }elseif ($input == 4){
             $databaseManager->deleteConnectionTableData();
             $databaseManager->deleteWordsTableData();

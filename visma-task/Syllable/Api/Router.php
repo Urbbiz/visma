@@ -12,10 +12,18 @@ class Router
     private $notFoundHandler;
     private const  METHOD_POST = 'POST';
     private const  METHOD_GET = 'GET';
+    private const  METHOD_DELETE = 'DELETE';
+    private const  METHOD_PUT = 'PUT';
+    public static $validRoutes = array();
+
 
     public function  get(string $path, $handler): void
     {
        $this->addHandler(self::METHOD_GET, $path, $handler);
+        self::$validRoutes[]= $path;
+//    print_r(self::$validRoutes);
+
+
     }
 
     public function post(string $path, $handler): void
@@ -23,6 +31,22 @@ class Router
         $this->addHandler( self::METHOD_POST, $path, $handler);
 
     }
+
+    public function delete(string $path, $handler): void
+    {
+        $this->addHandler( self::METHOD_DELETE, $path, $handler);
+
+
+    }
+
+    public function put(string $path, $handler): void
+    {
+        $this->addHandler( self::METHOD_PUT, $path, $handler);
+
+
+    }
+
+
 
     public  function  run()
     {
@@ -35,18 +59,18 @@ class Router
 
         $callback = null;
         foreach ($this->handlers as $handler) {
-            if ($handler['path'] === $requestPath && $method === $handler['method']) {  // check for finding correct handler
+
+
+            if (stripos($requestPath, $handler['path']) ==0 && $method === $handler['method']) {  // check for finding correct handler
                 $callback = $handler['handler'];
             }
         }
-
         if(!$callback) {
             header("HTTP/1.0 404 NOT FOUND");
             if(!empty($this->notFoundHandler)) {
                 $callback = $this->notFoundHandler;
             }
         }
-
         call_user_func_array($callback, [
             array_merge($_GET, $_POST)
         ]);
@@ -68,6 +92,9 @@ class Router
             'handler' => $handler,
         ];
 
+
     }
+
+
 
 }

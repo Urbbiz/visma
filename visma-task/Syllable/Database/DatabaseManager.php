@@ -28,7 +28,24 @@ class DatabaseManager extends Database
     }
 
 
-//
+    public function getAllWords() :array
+    {
+
+        $statement= $this->connect()->query("SELECT * FROM Words");  // imam data is words table
+        $results=[];
+        while ($row = $statement->fetch()){
+            $result = array();
+            $result['id'] = $row['id'];
+            $result['value'] = $row['value'];
+            $result['syllableValue'] = $row['syllableValue'];
+            $result['patterns'] = $this->getRelatedPatterns($row['id']);
+            $results[]= $result;
+
+//            echo  $row['value']. "\n";
+
+        }
+        return $results;
+    }
 
 
 
@@ -39,6 +56,21 @@ class DatabaseManager extends Database
     {
         $statement = $this->connect()->prepare("INSERT INTO Words( `value`,syllableValue)VALUES (?, ?)");  // imam data is Pattern table
         $statement->execute([$givenWord, $syllableWord]);
+
+    }
+
+
+
+    public function updateWord( $givenWord, $editedWord)
+    {
+        $word = $this->getWord($givenWord);
+        if($word != false){
+            $statement = $this->connect()->prepare("UPDATE Words SET value = ? WHERE ID=?");  // imam data is Pattern table
+            $statement->execute([ $editedWord, $word['id']]);
+            return $editedWord;
+        }
+
+         return false;
 
     }
 
@@ -155,6 +187,22 @@ class DatabaseManager extends Database
             echo 'ERROR Data Not Deleted';
         }
 
+    }
+
+    public function deleteWord   ($givenWord) {
+
+        $foundWord =$this->getWord($givenWord);
+
+        if($foundWord != false){
+            $pdoQuery = "DELETE FROM word_patterns WHERE wordId=? ";
+            $pdoResult = $this->connect()->prepare($pdoQuery);
+            $pdoResult->execute([$foundWord['id']]);
+
+            $pdoQuery = "DELETE FROM Words WHERE id=? ";
+            $pdoResult = $this->connect()->prepare($pdoQuery);
+            $pdoResult->execute([$foundWord['id']]);
+
+        }
     }
 
 

@@ -2,6 +2,7 @@
 
 namespace Syllable\Service;
 
+use Syllable\Database\DatabaseManager;
 use Syllable\Service;
 use Syllable\IO\ExtractionValues;
 use Syllable\PatternModel\PatternCollection;
@@ -91,5 +92,45 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
         $givenWord = ".".$givenWord.".";  // uzdedam taskus
 
         return $givenWord;
+    }
+
+
+    public function syllableUsingDataBase($givenWord){
+        $databaseManager = new DatabaseManager();
+
+        $patternsCollection = $databaseManager->getAllPatterns();
+
+        if(count($patternsCollection->getPatterns())==0) {
+            $databaseManager->setPatternsToDatabase(DIR . "data/inputfile.txt");
+        }
+
+        $databaseManager->getAllPatterns();
+
+
+        $wordInDatabase = $databaseManager->getWord($givenWord);
+
+        if($wordInDatabase !=false){
+//                Echo $wordInDatabase['syllableValue'];
+            $result = new SyllableResult();
+            $result->dashResult= $wordInDatabase['syllableValue'];
+            $id = $wordInDatabase['id'];
+            $result->matchedPatterns = $databaseManager->getRelatedPatterns($id);
+
+            return $result;
+
+        }else {
+            $patternsCollection = $databaseManager->getAllPatterns();
+            $syllableResult = $this->syllable($givenWord, $patternsCollection);
+            $databaseManager->addWord($givenWord, $syllableResult->dashResult);
+            $wordInDatabase = $databaseManager->getWord($givenWord);
+//            var_dump($wordInDatabase);
+            $id = $wordInDatabase['id'];
+            $patternIds= $databaseManager->getPatternIds($syllableResult->matchedPatterns);
+//            var_dump($patternIds);
+            $databaseManager->addRelatedPatterns($id,$patternIds);
+            return $syllableResult;
+        }
+
+
     }
 }
