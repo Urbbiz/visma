@@ -20,19 +20,6 @@ spl_autoload_register(
 
 
 
-//
-//require DIR . 'Syllable/App/Application.php';
-//require DIR . 'Syllable/PatternModel/PatternExtractorInterface.php';
-//require DIR . 'Syllable/PatternModel/PatternCollection.php';
-//require DIR . 'Syllable/PatternModel/PatternExtractor.php';
-//require DIR . 'Syllable/IO/Input/UserInput.php';
-//require DIR . 'Syllable/PatternModel/Pattern.php';
-//require DIR . 'Syllable/Service/SyllableAlgorithmInterface.php';
-//require DIR . 'Syllable/Service/SyllableAlgorithm.php';
-//require DIR . 'Syllable/Service/SyllableResult.php';
-//require DIR . 'Psr/Log/LoggerInterface.php';
-//require DIR . 'Psr/Log/Logger.php';
-//require DIR. 'Psr/Log/LogLevel.php';
 
 
 

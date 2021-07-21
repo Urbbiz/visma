@@ -1,11 +1,13 @@
 <?php
 
 
-namespace Psr\Log;
 
-use Psr\Log;
-use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
+namespace Syllable\App;
+
+use  Psr\Log\LoggerInterface;
+use  Psr\Log\LogLevel;
+
+
 
 
 class Logger implements LoggerInterface
@@ -25,9 +27,9 @@ class Logger implements LoggerInterface
          * @param array $context
          * @return void
          */
-       foreach ($this->loggers as $logger) {
-           $logger->emergency($message, $context);
-       }
+        foreach ($this->loggers as $logger) {
+            $logger->emergency($message, $context);
+        }
     }
 
     public function alert($message, array $context = array()):void
@@ -134,7 +136,7 @@ class Logger implements LoggerInterface
         $time = "Time: ".date("Y-m-d h:i:sa");
         $level = " Level:".$level." ";
 
-        file_put_contents(DIR."/Var/Log/logFile.txt",$this->interpolate($time.$level.$message."\n", $context), FILE_APPEND | LOCK_EX);
+        file_put_contents(DIR."/var/Log/logFile.txt",$this->interpolate($time.$level.$message."\n", $context), FILE_APPEND | LOCK_EX);
     }
 
     /**

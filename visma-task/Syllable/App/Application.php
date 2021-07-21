@@ -20,25 +20,15 @@ class Application
     public function runApp ()
     {
 
-
-//        $db = new Database();
-//        $db->connect();
-
         $databaseManager = new DatabaseManager();
-//        $user->setPatternsStatement(2, "Apelsinas");   // idedam i duombaze nauja info
         $databaseManager->getAllPatterns();
-//        $user->getPatternsWithCountCheck();
-//        $user->getAllPatternsStatement(1,'.mis1');
-//        $user->setPatternsStatementFromFile();
-//
-//        $databaseManager->setPatternsToDatabase(DIR."data/inputfile.txt");
-
-//        echo "Ar gavom ka nors is duombazes?  ".$databaseManager->getAllPatterns()[0]."Atsakyk prasau....";
 
 
         $userInput = new UserInput;
-        $SyllableAlgorithm = new SyllableAlgorithm();
+        $syllableAlgorithm = new SyllableAlgorithm();
 
+
+        //Ateiciai perdaryti i switch funkcija vietoj ifelse
         echo "Press: " . "\n";
         echo "1: Syllable SENTENCE" . "\n";
         echo "2: Syllable WORD" . "\n";
@@ -47,55 +37,11 @@ class Application
         $input = trim(fgets(STDIN, 1024));
 
         if ($input == 1) {
-            echo "You chose to syllable SENTENCE" . "\n";
-
-            $givenSentence = $userInput->getInputSentence();  // paduoda ivesta zodi
-            $sentenceToWordArray = $userInput->getSentenceWordsInArray($givenSentence);
-
-            $patternExtractor = new PatternExtractor();
-            $patternsResult = $patternExtractor->getPatterns(DIR . "data/inputfile.txt"); // issitraukiam txt failo turini.
-            $syllableSentence = '';
-            foreach ($sentenceToWordArray as $word) {
-                $syllableWord = $SyllableAlgorithm->syllable($word, $patternsResult);
-                $syllableSentence .= $syllableWord->dashResult;
-                echo $syllableWord->dashResult . " ";
-            }
-            exit(0);
+            $syllableAlgorithm->syllableSentence();
         } elseif ($input == 2) {
-
-//        $d=mktime();
-//        echo "Created date is " . date("Y-m-d h:i:sa", $d);
-            $logger = new Logger();
-//        $logger->log(""," test message time of message:".date("Y-m-d h:i:sa", $d)."\n");
-
-
-            // $userInput = new UserInput;
-            $givenWord = $userInput->getInputWord();  // paduoda ivesta zodi
-
-            $startTime = microtime(true); // laiko pradzia
-
-            $patternExtractor = new PatternExtractor();
-            $patternsResult = $patternExtractor->getPatterns(DIR . "data/inputfile.txt"); // issitraukiam txt failo turini.
-
-
-            // $SyllableAlgorithm = new SyllableAlgorithm();
-            $syllableResult = $SyllableAlgorithm->syllable($givenWord, $patternsResult);
-
-            echo "Syllable result: " . $syllableResult->dashResult . "\n";   // parodo isskiemenuota zodi.
-
-            // var_dump($syllableResult);
-
-
-            $endTime = microtime(true); //laiko pabaiga
-            $executionTime = round($endTime - $startTime, 4); // programos veikimo laikas suapvalintas iki 4 skaiciu po kablelio
-            echo "Execution time: $executionTime seconds";
-
-            $logger->info("Syllable method took{$executionTime} seconds, syllabed word; {$givenWord}.");
-
-
+            $syllableAlgorithm->syllableWord();
         }elseif ($input == 3){
-
-            var_dump($SyllableAlgorithm->syllableUsingDataBase($userInput->getInputWord()));
+            var_dump($syllableAlgorithm->syllableUsingDataBase($userInput->getInputWord()));
         }elseif ($input == 4){
             $databaseManager->deleteConnectionTableData();
             $databaseManager->deleteWordsTableData();
