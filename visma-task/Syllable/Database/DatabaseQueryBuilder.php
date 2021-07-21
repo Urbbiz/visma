@@ -7,10 +7,10 @@ namespace Syllable\Database;
 class DatabaseQueryBuilder
 {
     private array $fields = [];
-    private array $from = [];
+    private string $from ='';
     private array $where = [];
 
-    public function select(array $fields): DatabaseQueryBuilder
+    public function select(array $fields = ['*']): DatabaseQueryBuilder // jeigu nepaduodu jokio fields, imes automatiskai zvaigzdute
     {
         $this->fields = $fields;
         return $this;
@@ -23,7 +23,7 @@ class DatabaseQueryBuilder
 
     public function from(string $from): DatabaseQueryBuilder
     {
-        $this->from[] = $from;
+        $this->from = $from;
         return $this;
     }
 
@@ -32,7 +32,7 @@ class DatabaseQueryBuilder
     {
         $selectString = sprintf('SELECT %s FROM %s',
             join(', ', $this->fields),
-            join(', ', $this->from),
+            $this->from
         );
 
         if (!empty($this->where)) {

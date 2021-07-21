@@ -4,6 +4,7 @@ declare(strict_types =1);
 
 namespace Syllable\Controllers;
 
+use Syllable\Database\DatabaseManagerProxy;
 use Syllable\PatternModel;
 use Syllable\Database\DatabaseManager;
 use Syllable\Service\SyllableAlgorithm;
@@ -22,8 +23,8 @@ class WordsController extends Controller
 {
     $results =[];
 //    print_r(self::query("SELECT * FROM Patterns"));
-      $dataBaseManager = new DatabaseManager();
-      $patterns= $dataBaseManager->getAllPatterns()->getPatterns();
+      $dataBaseManagerProxy = new DatabaseManagerProxy();
+      $patterns= $dataBaseManagerProxy->getAllPatterns()->getPatterns();
       foreach ($patterns as $pattern){
           $results[]= $pattern->__toString();
       }
@@ -35,8 +36,8 @@ class WordsController extends Controller
     {
 
 //    print_r(self::query("SELECT * FROM Patterns"));
-        $dataBaseManager = new DatabaseManager();
-        $words= $dataBaseManager->getAllWords();
+        $dataBaseManagerProxy = new DatabaseManagerProxy();
+        $words= $dataBaseManagerProxy->getAllWords();
 
         header("Content-Type:APPLICATION/JSON");
         echo json_encode($words);

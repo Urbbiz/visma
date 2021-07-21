@@ -11,7 +11,11 @@ class DatabaseManager extends Database
     //get data from database
     public function getAllPatterns(): PatternCollection
     {
-        $statement = $this->connect()->query("SELECT * FROM Patterns");  // imam data is Pattern table
+        $sqlQuery = (new DatabaseQueryBuilder())
+            ->select()
+            ->from(TableNames::PATTERNS);
+
+        $statement = $this->connect()->query($sqlQuery);  // imam data is Pattern table
         $results = new PatternCollection();
         while ($row = $statement->fetch()) {
             $value = $row['value'];
@@ -23,7 +27,11 @@ class DatabaseManager extends Database
 
     public function getAllWords(): array
     {
-        $statement = $this->connect()->query("SELECT * FROM Words");  // imam data is words table
+        $sqlQuery = (new DatabaseQueryBuilder())
+            ->select()
+            ->from(TableNames::WORDS);
+
+        $statement = $this->connect()->query($sqlQuery);  // imam data is words table
         $results = [];
         while ($row = $statement->fetch()) {
             $result = array();
@@ -39,6 +47,8 @@ class DatabaseManager extends Database
     //  PUT DATA TO DATA BASE
     public function addWord($givenWord, $syllableWord)
     {
+
+
         $statement = $this->connect()->prepare("INSERT INTO Words( `value`,syllableValue)VALUES (?, ?)");  // imam data is Pattern table
         $statement->execute([$givenWord, $syllableWord]);
     }
@@ -58,7 +68,13 @@ class DatabaseManager extends Database
 
     public function getWord($givenWord)
     {      // patikrinsim db ar jau buvo toks vardas
-        $statement = $this->connect()->prepare("SELECT * FROM Words WHERE `value` = ?");// imam data is Pattern table
+
+        $sqlQuery = (new DatabaseQueryBuilder())
+            ->select()
+            ->from(TableNames::WORDS)
+            ->where('`value` = ?');
+
+        $statement = $this->connect()->prepare($sqlQuery);// imam data is Pattern table
 //        $statement->bindValue(1, $givenWord);
         $statement->execute([$givenWord]);
         return $statement->fetch();   //jeigu neras grazins false, jei ras, grazins visa rows
@@ -102,6 +118,8 @@ class DatabaseManager extends Database
 
     public function getPatternIds($patterns): array
     {
+
+
         $statement = $this->connect()->prepare("SELECT * FROM Patterns WHERE `value` IN ('" . implode("','", $patterns) . "')");// imam data is Pattern table
         $statement->execute();
         $results = [];
