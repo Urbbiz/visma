@@ -4,27 +4,42 @@ declare(strict_types =1);
 
 namespace Syllable\Controllers;
 
+use Syllable\Database\DatabaseManagerInterface;
 use Syllable\Database\DatabaseManagerProxy;
+use Syllable\Database\DatabaseManagerProxyInterface;
 use Syllable\PatternModel;
 use Syllable\Database\DatabaseManager;
 use Syllable\Service\SyllableAlgorithm;
+use Syllable\Service\SyllableAlgorithmInterface;
 
-class WordsController extends Controller
+class WordsController
 {
 
+    private DatabaseManagerProxyInterface $dataBaseManagerProxy;
+    private SyllableAlgorithmInterface $syllableAlgorithm;
+    private DatabaseManagerInterface $dataBaseManager;
 
+    public function __construct(DatabaseManagerInterface $dataBaseManager,
+                                DatabaseManagerProxyInterface $dataBaseManagerProxy,
+                                SyllableAlgorithmInterface $syllableAlgorithm)
+    {
+//
+//        $this->dataBaseManagerProxy = new DatabaseManagerProxy();
+//        $this->syllableAlgorithm = new SyllableAlgorithm();
+//        $this->dataBaseManager = new DatabaseManager();
+        //
+        $this->dataBaseManager = $dataBaseManager;
+        $this->dataBaseManagerProxy = $dataBaseManagerProxy ;
+        $this->syllableAlgorithm = $syllableAlgorithm;
 
-  public function  arMatai()
-  {
-      echo "Ar matai uzrasa???";
-  }
+    }
 
   public function getPatterns()
 {
     $results =[];
 //    print_r(self::query("SELECT * FROM Patterns"));
-      $dataBaseManagerProxy = new DatabaseManagerProxy();
-      $patterns= $dataBaseManagerProxy->getAllPatterns()->getPatterns();
+
+      $patterns= $this->dataBaseManagerProxy->getAllPatterns()->getPatterns();
       foreach ($patterns as $pattern){
           $results[]= $pattern->__toString();
       }
@@ -36,8 +51,7 @@ class WordsController extends Controller
     {
 
 //    print_r(self::query("SELECT * FROM Patterns"));
-        $dataBaseManagerProxy = new DatabaseManagerProxy();
-        $words= $dataBaseManagerProxy->getAllWords();
+        $words= $this->dataBaseManagerProxy->getAllWords();
 
         header("Content-Type:APPLICATION/JSON");
         echo json_encode($words);
@@ -46,8 +60,8 @@ class WordsController extends Controller
     public function  postWord($givenWord)
     {
         header("Content-Type:APPLICATION/JSON");
-        $syllableAlgorithm = new SyllableAlgorithm();
-        $result = $syllableAlgorithm ->syllableUsingDataBase($givenWord);
+
+        $result = $this ->syllableAlgorithm ->syllableUsingDataBase($givenWord);
         echo json_encode($result);
 
     }
@@ -55,14 +69,11 @@ class WordsController extends Controller
     public function  putWord($givenWord, $editedWord)
     {
         header("Content-Type:APPLICATION/JSON");
-        $dataBaseManager = new DatabaseManager();
-        $word = $dataBaseManager->updateWord($givenWord, $editedWord);
-
-
+        $word = $this->dataBaseManagerProxy->updateWord($givenWord, $editedWord);
+       
         if($word == false) {
             return false;
         }
-
         $result= array();
         $result['word'] = $word;
         echo json_encode($result);
@@ -73,21 +84,12 @@ class WordsController extends Controller
     public function  deleteWord($givenWord)
     {
         header("Content-Type:APPLICATION/JSON");
-        $dataBaseManager = new DatabaseManager();
-        $dataBaseManager->deleteWord($givenWord);
+
+        $this ->dataBaseManager->deleteWord($givenWord);
         $result= array();
         $result['message'] = 'Deleted!!!';
         echo json_encode($result);
 
     }
 
-//    private function __construct()
-//    {
-//        if (!file_exists(DIR . 'data/accounts.json')) {    // pirma karta sukuriam json faila, jeigu jo dar nera
-//            $data = json_encode([]); //uzkoduojam sita faila i json kaip masyva, ojame yra objektai
-//            file_put_contents(DIR . 'data/accounts.json', $data); //irasom i json faila.
-//        }
-//        $data = file_get_contents(DIR . 'data/accounts.json'); // jeigu jau egzistuoja, pasiimu faila
-//        $this->data = json_decode($data); //iraso objekta this data i json faila.
-//    }
 }

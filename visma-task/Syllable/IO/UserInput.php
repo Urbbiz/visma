@@ -9,7 +9,7 @@ class UserInput {
 
  
 
-    public function getInputWord()
+    public function getInputWord():string
     {
         echo "Please Enter the word you want to syllable", "\n";
         echo "Enter Word here: ";
@@ -21,7 +21,7 @@ class UserInput {
         return $givenWord;
     }
 
-    public function getInputSentence()
+    public function getInputSentence():string
     {
         echo "Please Enter the SENTENCE you want to syllable", "\n";
         echo "Enter SENTENCE here: ";

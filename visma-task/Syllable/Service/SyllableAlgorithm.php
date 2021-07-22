@@ -21,6 +21,7 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
 
         $foundValues= [];
         foreach ($patternResult->getPatterns()as $pattern){  // einam per masyva be skaiciu
+
             $addedResult = false;
             $found=false;
             do {                          // ieskom skiemens givenWorde
@@ -52,7 +53,7 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
                 }
                 $found = stripos($givenWord, $pattern->getPatternWithoutNumbers(), $offset);  // ieskom value duotam zodyje , nuo vietos kuria nurodo offset.
 
-            }while($found !== false);   // sukam cikla tol, kol randam zodyje kelis skiemenu atitikmenis
+            }while($found != false);   // sukam cikla tol, kol randam zodyje kelis skiemenu atitikmenis
         }
 
         $syllableResult->dashResult = $this->numbersToDash($givenWord, $foundValues);

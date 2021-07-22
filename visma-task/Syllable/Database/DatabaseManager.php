@@ -6,8 +6,9 @@ use PDO;
 use Syllable\PatternModel\Pattern;
 use Syllable\PatternModel\PatternCollection;
 
-class DatabaseManager extends Database
+class DatabaseManager extends Database implements DatabaseManagerInterface
 {
+
     //get data from database
     public function getAllPatterns(): PatternCollection
     {
@@ -45,7 +46,7 @@ class DatabaseManager extends Database
     }
 
     //  PUT DATA TO DATA BASE
-    public function addWord($givenWord, $syllableWord)
+    public function addWord($givenWord, $syllableWord):void
     {
 
 
@@ -81,7 +82,7 @@ class DatabaseManager extends Database
     }
 
 
-    public function setPatternsToDatabase($filePath)
+    public function setPatternsToDatabase($filePath):void
     {
         $file = new \SplFileObject($filePath);
         while (!$file->eof()) {
@@ -130,7 +131,7 @@ class DatabaseManager extends Database
         return $results;
     }
 
-    public function deletePatternsData()
+    public function deletePatternsData():void
     {
         $pdoQuery = "DELETE FROM Patterns";
 //        $pdoQuery = "DELETE FROM Patterns WHERE";
@@ -144,7 +145,7 @@ class DatabaseManager extends Database
         }
     }
 
-    public function deleteConnectionTableData()
+    public function deleteConnectionTableData():void
     {
         $pdoQuery = "DELETE FROM word_patterns";
 //        $pdoQuery = "DELETE FROM Patterns WHERE";
@@ -158,7 +159,7 @@ class DatabaseManager extends Database
         }
     }
 
-    public function deleteWordsTableData()
+    public function deleteWordsTableData():void
     {
         $pdoQuery = "DELETE FROM Words";
 //        $pdoQuery = "DELETE FROM Patterns WHERE";
@@ -172,7 +173,7 @@ class DatabaseManager extends Database
         }
     }
 
-    public function deleteWord($givenWord)
+    public function deleteWord($givenWord):void
     {
         $foundWord = $this->getWord($givenWord);
         if ($foundWord != false) {

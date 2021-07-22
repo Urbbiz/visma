@@ -1,15 +1,15 @@
 <?php
 namespace Syllable\Database;
 
-namespace Syllable\Database;
 
 
-use Syllable\PatternModel\Pattern;
+
+use Syllable\Database\DatabaseManagerProxyInterface;
 use Syllable\PatternModel\PatternCollection;
 
 
 
-class DatabaseManagerProxy
+class DatabaseManagerProxy implements DatabaseManagerProxyInterface
 {
 
     private ?PatternCollection $patternCollection = NULL;   // Cache rezultata
@@ -19,10 +19,10 @@ class DatabaseManagerProxy
     private array $WordPatterns = [];
     private DatabaseManager $dataBaseManager;
 
-    public function __construct()
+    public function __construct(DatabaseManagerInterface $dataBaseManager)
     {
 
-        $this->dataBaseManager = new DatabaseManager();
+        $this->dataBaseManager = $dataBaseManager;
     }
 
     public function getAllPatterns(): PatternCollection

@@ -8,5 +8,5 @@ use Syllable\PatternModel\PatternCollection;
 
 interface SyllableAlgorithmInterface
 {
-function  syllable(string $givenWord, PatternCollection $patternResult): SyllableResult;
+    public function  syllable(string $givenWord, PatternCollection $patternResult): SyllableResult;
 }
