@@ -39,13 +39,7 @@ interface DatabaseManagerInterface
     public function getPatternIds($patterns): array;
 
 
-    public function deletePatternsData(): void;
-
-
-    public function deleteConnectionTableData():void;
-
-
-    public function deleteWordsTableData():void;
+    public function deleteAllTablesData():void;
 
 
     public function deleteWord($givenWord):void;

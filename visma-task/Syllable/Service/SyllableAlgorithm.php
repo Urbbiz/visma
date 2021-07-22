@@ -6,7 +6,6 @@ namespace Syllable\Service;
 
 use Syllable\Database\DatabaseManagerInterface;
 use Syllable\IO\UserInputReaderInterface;
-use Syllable\PatternModel\PatternExtractor;
 use Syllable\IO\ExtractionValues;
 use Syllable\PatternModel\PatternCollection;
 use Syllable\App\Logger;
@@ -150,19 +149,13 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
     {
         $logger = new Logger();
 
-
         $givenWord = $this->userInputReader->getInputWord();  // paduoda ivesta zodi
-
         $startTime = microtime(true); // laiko pradzia
-
         $patternsResult = $this->patternExtractor->getPatterns(DIR . "data/inputfile.txt"); // issitraukiam txt failo turini.
-
 
         $syllableResult = $this->syllable($givenWord, $patternsResult);
 
         echo "Syllable result: " . $syllableResult->dashResult . "\n";   // parodo isskiemenuota zodi.
-
-
 
         $endTime = microtime(true); //laiko pabaiga
         $executionTime = round($endTime - $startTime, 4); // programos veikimo laikas suapvalintas iki 4 skaiciu po kablelio
@@ -178,7 +171,6 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
 
         $givenSentence = $this->userInputReader->getInputSentence();  // paduoda ivesta zodi
         $sentenceToWordArray = $this->userInputReader->getSentenceWordsInArray($givenSentence);
-
         $patternsResult = $this->patternExtractor->getPatterns(DIR . "data/inputfile.txt"); // issitraukiam txt failo turini.
         $syllableSentence = '';
         foreach ($sentenceToWordArray as $word) {
@@ -188,4 +180,5 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
         }
         exit(0);
     }
+
 }

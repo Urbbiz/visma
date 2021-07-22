@@ -131,47 +131,6 @@ class DatabaseManager extends Database implements DatabaseManagerInterface
         return $results;
     }
 
-    public function deletePatternsData():void
-    {
-        $pdoQuery = "DELETE FROM Patterns";
-//        $pdoQuery = "DELETE FROM Patterns WHERE";
-        $pdoResult = $this->connect()->prepare($pdoQuery);
-        $pdoExec = $pdoResult->execute();
-
-        if ($pdoExec) {
-            echo 'Data from Patterns table Deleted';
-        } else {
-            echo 'ERROR Data Not Deleted';
-        }
-    }
-
-    public function deleteConnectionTableData():void
-    {
-        $pdoQuery = "DELETE FROM word_patterns";
-//        $pdoQuery = "DELETE FROM Patterns WHERE";
-        $pdoResult = $this->connect()->prepare($pdoQuery);
-        $pdoExec = $pdoResult->execute();
-
-        if ($pdoExec) {
-            echo 'Data from word_patterns table Deleted';
-        } else {
-            echo 'ERROR Data Not Deleted';
-        }
-    }
-
-    public function deleteWordsTableData():void
-    {
-        $pdoQuery = "DELETE FROM Words";
-//        $pdoQuery = "DELETE FROM Patterns WHERE";
-        $pdoResult = $this->connect()->prepare($pdoQuery);
-        $pdoExec = $pdoResult->execute();
-
-        if ($pdoExec) {
-            echo 'Data from Words table Deleted';
-        } else {
-            echo 'ERROR Data Not Deleted';
-        }
-    }
 
     public function deleteWord($givenWord):void
     {
@@ -186,6 +145,56 @@ class DatabaseManager extends Database implements DatabaseManagerInterface
             $pdoResult->execute([$foundWord['id']]);
         }
     }
+    public function deleteAllTablesData():void
+    {
+        $this->deleteConnectionTableData();
+        $this->deleteWordsTableData();
+        $this->deletePatternsData();
+    }
+
+    private function deleteConnectionTableData():void
+    {
+        $pdoQuery = "DELETE FROM word_patterns";
+//        $pdoQuery = "DELETE FROM Patterns WHERE";
+        $pdoResult = $this->connect()->prepare($pdoQuery);
+        $pdoExec = $pdoResult->execute();
+
+        if ($pdoExec) {
+            echo 'Data from word_patterns table Deleted';
+        } else {
+            echo 'ERROR Data Not Deleted';
+        }
+    }
+
+    private function deleteWordsTableData():void
+    {
+        $pdoQuery = "DELETE FROM Words";
+//        $pdoQuery = "DELETE FROM Patterns WHERE";
+        $pdoResult = $this->connect()->prepare($pdoQuery);
+        $pdoExec = $pdoResult->execute();
+
+        if ($pdoExec) {
+            echo 'Data from Words table Deleted';
+        } else {
+            echo 'ERROR Data Not Deleted';
+        }
+    }
+
+    private function deletePatternsData():void
+    {
+        $pdoQuery = "DELETE FROM Patterns";
+//        $pdoQuery = "DELETE FROM Patterns WHERE";
+        $pdoResult = $this->connect()->prepare($pdoQuery);
+        $pdoExec = $pdoResult->execute();
+
+        if ($pdoExec) {
+            echo 'Data from Patterns table Deleted';
+        } else {
+            echo 'ERROR Data Not Deleted';
+        }
+    }
+
+
 
 
 }

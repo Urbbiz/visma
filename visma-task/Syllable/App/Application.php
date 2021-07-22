@@ -11,42 +11,39 @@ use Syllable\PatternModel\PatternExtractor;
 use Syllable\PatternModel\PatternCollection;
 use Syllable\IO\UserInputReader;
 
-
-
 class Application
 {
-
-
     public function runApp ()
     {
-
         $databaseManager = new DatabaseManager();
-        $databaseManager->getAllPatterns();
         $patternExtractor = new PatternExtractor();
-        $userInputReader = new UserInputReader;
+        $userInputReader = new UserInputReader();
         $syllableAlgorithm = new SyllableAlgorithm($databaseManager, $userInputReader, $patternExtractor);
 
-
-        //Ateiciai perdaryti i switch funkcija vietoj ifelse
         echo "Press: " . "\n";
         echo "1: Syllable SENTENCE" . "\n";
         echo "2: Syllable WORD" . "\n";
         echo "3: Syllable WORD using DATABASE" . "\n";
         echo "4: RESET  DATABASE" . "\n";
+
         $input = trim(fgets(STDIN, 1024));
 
-        if ($input == 1) {
-            $syllableAlgorithm->syllableSentence();
-        } elseif ($input == 2) {
-            $syllableAlgorithm->syllableWord();
-        }elseif ($input == 3){
-            var_dump($syllableAlgorithm->syllableUsingDataBase($userInputReader->getInputWord()));
-        }elseif ($input == 4){
-            $databaseManager->deleteConnectionTableData();
-            $databaseManager->deleteWordsTableData();
-            $databaseManager->deletePatternsData();
-
+        switch ($input){
+            case 1:
+                $syllableAlgorithm->syllableSentence();
+                break;
+            case 2:
+                $syllableAlgorithm->syllableWord();
+                break;
+            case 3:
+                $syllableAlgorithm->syllableWord();
+//                var_dump($syllableAlgorithm->syllableUsingDataBase($userInputReader->getInputWord()));
+                break;
+            case 4:
+                $databaseManager->deleteAllTablesData();
+                break;
         }
+
     }
 
 }
