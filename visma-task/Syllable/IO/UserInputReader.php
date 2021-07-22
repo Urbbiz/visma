@@ -2,12 +2,11 @@
 
 namespace Syllable\IO;
 
-use Syllable\IO;
 
 
-class UserInput {
 
- 
+class UserInputReader implements UserInputReaderInterface
+{
 
     public function getInputWord():string
     {

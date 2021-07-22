@@ -3,16 +3,32 @@
 namespace Syllable\Service;
 
 
-use Syllable\Database\DatabaseManager;
-use Syllable\IO\UserInput;
+
+use Syllable\Database\DatabaseManagerInterface;
+use Syllable\IO\UserInputReaderInterface;
 use Syllable\PatternModel\PatternExtractor;
-use Syllable\Service;
 use Syllable\IO\ExtractionValues;
 use Syllable\PatternModel\PatternCollection;
 use Syllable\App\Logger;
+use Syllable\PatternModel\PatternExtractorInterface;
+
 
 class SyllableAlgorithm implements SyllableAlgorithmInterface
 {
+    private DatabaseManagerInterface $databaseManager;
+    private UserInputReaderInterface $userInputReader;
+    private PatternExtractorInterface $patternExtractor;
+
+    public function __construct(DatabaseManagerInterface $databaseManager,
+                                UserInputReaderInterface $userInputReader,
+                                PatternExtractorInterface $patternExtractor)
+    {
+        $this->databaseManager = $databaseManager;
+        $this->userInputReader = $userInputReader;
+        $this->patternExtractor = $patternExtractor;
+    }
+
+
     function  syllable(string $givenWord, PatternCollection $patternResult): SyllableResult
     {
         $givenWord =$this->addDots($givenWord);// uzdedam taskus is priekio ir galo duotam zodziui
@@ -102,60 +118,50 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
 
     public function syllableUsingDataBase($givenWord):SyllableResult
     {
-        $databaseManager = new DatabaseManager();
-        $patternsCollection = $databaseManager->getAllPatterns();
+
+        $patternsCollection = $this->databaseManager->getAllPatterns();
 
         if(count($patternsCollection->getPatterns())==0) {
-            $databaseManager->setPatternsToDatabase(DIR . "data/inputfile.txt");
+            $this->databaseManager->setPatternsToDatabase(DIR . "data/inputfile.txt");
         }
 
-        $databaseManager->getAllPatterns();
-        $wordInDatabase = $databaseManager->getWord($givenWord);
+        $this->databaseManager->getAllPatterns();
+        $wordInDatabase = $this->databaseManager->getWord($givenWord);
 
         if($wordInDatabase !==false){
             $result = new SyllableResult();
             $result->dashResult= $wordInDatabase['syllableValue'];
             $id = $wordInDatabase['id'];
-            $result->matchedPatterns = $databaseManager->getRelatedPatterns($id);
+            $result->matchedPatterns = $this->databaseManager->getRelatedPatterns($id);
             return $result;
         }else {
-            $patternsCollection = $databaseManager->getAllPatterns();
+            $patternsCollection = $this->databaseManager->getAllPatterns();
             $syllableResult = $this->syllable($givenWord, $patternsCollection);
-            $databaseManager->addWord($givenWord, $syllableResult->dashResult);
-            $wordInDatabase = $databaseManager->getWord($givenWord);
+            $this->databaseManager->addWord($givenWord, $syllableResult->dashResult);
+            $wordInDatabase = $this->databaseManager->getWord($givenWord);
             $id = $wordInDatabase['id'];
-            $patternIds= $databaseManager->getPatternIds($syllableResult->matchedPatterns);
-            $databaseManager->addRelatedPatterns($id,$patternIds);
+            $patternIds= $this->databaseManager->getPatternIds($syllableResult->matchedPatterns);
+            $this->databaseManager->addRelatedPatterns($id,$patternIds);
             return $syllableResult;
         }
     }
 
     public  function syllableWord()
     {
-
-//        $d=mktime();
-//        echo "Created date is " . date("Y-m-d h:i:sa", $d);
-//        $logger = new Logger();
         $logger = new Logger();
-//        $logger->log(""," test message time of message:".date("Y-m-d h:i:sa", $d)."\n");
 
 
-        // $userInput = new UserInput;
-        $userInput= new UserInput();
-        $givenWord = $userInput->getInputWord();  // paduoda ivesta zodi
+        $givenWord = $this->userInputReader->getInputWord();  // paduoda ivesta zodi
 
         $startTime = microtime(true); // laiko pradzia
 
-        $patternExtractor = new PatternExtractor();
-        $patternsResult = $patternExtractor->getPatterns(DIR . "data/inputfile.txt"); // issitraukiam txt failo turini.
+        $patternsResult = $this->patternExtractor->getPatterns(DIR . "data/inputfile.txt"); // issitraukiam txt failo turini.
 
 
-         $SyllableAlgorithm = new SyllableAlgorithm();
         $syllableResult = $this->syllable($givenWord, $patternsResult);
 
         echo "Syllable result: " . $syllableResult->dashResult . "\n";   // parodo isskiemenuota zodi.
 
-        // var_dump($syllableResult);
 
 
         $endTime = microtime(true); //laiko pabaiga
@@ -169,12 +175,11 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
     public function  syllableSentence()
     {
         echo "You chose to syllable SENTENCE" . "\n";
-        $userInput= new UserInput();
-        $givenSentence = $userInput->getInputSentence();  // paduoda ivesta zodi
-        $sentenceToWordArray = $userInput->getSentenceWordsInArray($givenSentence);
 
-        $patternExtractor = new PatternExtractor();
-        $patternsResult = $patternExtractor->getPatterns(DIR . "data/inputfile.txt"); // issitraukiam txt failo turini.
+        $givenSentence = $this->userInputReader->getInputSentence();  // paduoda ivesta zodi
+        $sentenceToWordArray = $this->userInputReader->getSentenceWordsInArray($givenSentence);
+
+        $patternsResult = $this->patternExtractor->getPatterns(DIR . "data/inputfile.txt"); // issitraukiam txt failo turini.
         $syllableSentence = '';
         foreach ($sentenceToWordArray as $word) {
             $syllableWord = $this-> syllable($word, $patternsResult);

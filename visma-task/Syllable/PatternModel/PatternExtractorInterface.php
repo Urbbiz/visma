@@ -1,6 +1,6 @@
 <?php
 namespace Syllable\PatternModel;
-use  Syllable\PatternModel;
+
 
 interface PatternExtractorInterface
 {

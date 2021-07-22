@@ -9,7 +9,7 @@ use Syllable\Service\SyllableAlgorithm;
 use Syllable\Service\SyllableResult;
 use Syllable\PatternModel\PatternExtractor;
 use Syllable\PatternModel\PatternCollection;
-use Syllable\IO\UserInput;
+use Syllable\IO\UserInputReader;
 
 
 
@@ -22,10 +22,9 @@ class Application
 
         $databaseManager = new DatabaseManager();
         $databaseManager->getAllPatterns();
-
-
-        $userInput = new UserInput;
-        $syllableAlgorithm = new SyllableAlgorithm();
+        $patternExtractor = new PatternExtractor();
+        $userInputReader = new UserInputReader;
+        $syllableAlgorithm = new SyllableAlgorithm($databaseManager, $userInputReader, $patternExtractor);
 
 
         //Ateiciai perdaryti i switch funkcija vietoj ifelse
@@ -41,7 +40,7 @@ class Application
         } elseif ($input == 2) {
             $syllableAlgorithm->syllableWord();
         }elseif ($input == 3){
-            var_dump($syllableAlgorithm->syllableUsingDataBase($userInput->getInputWord()));
+            var_dump($syllableAlgorithm->syllableUsingDataBase($userInputReader->getInputWord()));
         }elseif ($input == 4){
             $databaseManager->deleteConnectionTableData();
             $databaseManager->deleteWordsTableData();
