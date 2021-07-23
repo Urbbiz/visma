@@ -1,20 +1,15 @@
 <?php
 
-
-
 namespace Syllable\App;
 
 use  Psr\Log\LoggerInterface;
 use  Psr\Log\LogLevel;
 
-
-
-
 class Logger implements LoggerInterface
 {
     private $loggers;
 
-    public function emergency($message, array $context = array()):void
+    public function emergency($message, array $context = array()): void
     {
 
         /**
@@ -32,7 +27,7 @@ class Logger implements LoggerInterface
         }
     }
 
-    public function alert($message, array $context = array()):void
+    public function alert($message, array $context = array()): void
     {
 
         $this->log(LogLevel::ALERT, $message, $context);
@@ -48,7 +43,7 @@ class Logger implements LoggerInterface
          */
     }
 
-    public function critical($message, array $context = array()):void
+    public function critical($message, array $context = array()): void
     {
         $this->log(LogLevel::CRITICAL, $message, $context);
 
@@ -62,7 +57,7 @@ class Logger implements LoggerInterface
          */
     }
 
-    public function error($message, array $context = array()):void
+    public function error($message, array $context = array()): void
     {
         $this->log(LogLevel::ERROR, $message, $context);
         /**
@@ -77,7 +72,7 @@ class Logger implements LoggerInterface
          */
     }
 
-    public function warning($message, array $context = array()):void
+    public function warning($message, array $context = array()): void
     {
         $this->log(LogLevel::WARNING, $message, $context);
         /**
@@ -88,7 +83,7 @@ class Logger implements LoggerInterface
          * @return void
          */
     }
-    public function notice($message, array $context = array()):void
+    public function notice($message, array $context = array()): void
     {
 
         $this->log(LogLevel::NOTICE, $message, $context);
@@ -103,7 +98,7 @@ class Logger implements LoggerInterface
          */
     }
 
-    public function info($message, array $context = array()):void
+    public function info($message, array $context = array()): void
     {
         $this->log(LogLevel::INFO, $message, $context);
         /**
@@ -115,7 +110,7 @@ class Logger implements LoggerInterface
          */
     }
 
-    public function debug($message, array $context = array()):void
+    public function debug($message, array $context = array()): void
     {
         $this->log(LogLevel::DEBUG, $message, $context);
         /**
@@ -126,17 +121,15 @@ class Logger implements LoggerInterface
          * @param array $context
          * @return void
          */
-
-
     }
 
     public function log($level, $message, array $context = array())
     {
         // $d=mktime();
-        $time = "Time: ".date("Y-m-d h:i:sa");
-        $level = " Level:".$level." ";
+        $time = "Time: " . date("Y-m-d h:i:sa");
+        $level = " Level:" . $level . " ";
 
-        file_put_contents(DIR."/var/Log/logFile.txt",$this->interpolate($time.$level.$message."\n", $context), FILE_APPEND | LOCK_EX);
+        file_put_contents(DIR . "/var/Log/logFile.txt", $this->interpolate($time . $level . $message . "\n", $context), FILE_APPEND | LOCK_EX);
     }
 
     /**
@@ -167,5 +160,4 @@ class Logger implements LoggerInterface
 //
 //// echoes "User bolivar created"
 //echo interpolate($message, $context);
-
 }

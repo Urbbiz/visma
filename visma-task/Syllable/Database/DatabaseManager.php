@@ -46,7 +46,7 @@ class DatabaseManager extends Database implements DatabaseManagerInterface
     }
 
     //  PUT DATA TO DATA BASE
-    public function addWord($givenWord, $syllableWord):void
+    public function addWord($givenWord, $syllableWord): void
     {
 
 
@@ -68,7 +68,8 @@ class DatabaseManager extends Database implements DatabaseManagerInterface
 
 
     public function getWord($givenWord)
-    {      // patikrinsim db ar jau buvo toks vardas
+    {
+      // patikrinsim db ar jau buvo toks vardas
 
         $sqlQuery = (new DatabaseQueryBuilder())
             ->select()
@@ -82,7 +83,7 @@ class DatabaseManager extends Database implements DatabaseManagerInterface
     }
 
 
-    public function setPatternsToDatabase($filePath):void
+    public function setPatternsToDatabase($filePath): void
     {
         $file = new \SplFileObject($filePath);
         while (!$file->eof()) {
@@ -94,7 +95,7 @@ class DatabaseManager extends Database implements DatabaseManagerInterface
         }
     }
 
-    public function addRelatedPatterns($wordId, $patternIds):void
+    public function addRelatedPatterns($wordId, $patternIds): void
     {
 
         foreach ($patternIds as $patternId) {
@@ -132,7 +133,7 @@ class DatabaseManager extends Database implements DatabaseManagerInterface
     }
 
 
-    public function deleteWord($givenWord):void
+    public function deleteWord($givenWord): void
     {
         $foundWord = $this->getWord($givenWord);
         if ($foundWord != false) {
@@ -145,14 +146,14 @@ class DatabaseManager extends Database implements DatabaseManagerInterface
             $pdoResult->execute([$foundWord['id']]);
         }
     }
-    public function deleteAllTablesData():void
+    public function deleteAllTablesData(): void
     {
         $this->deleteConnectionTableData();
         $this->deleteWordsTableData();
         $this->deletePatternsData();
     }
 
-    private function deleteConnectionTableData():void
+    private function deleteConnectionTableData(): void
     {
         $pdoQuery = "DELETE FROM word_patterns";
 //        $pdoQuery = "DELETE FROM Patterns WHERE";
@@ -166,7 +167,7 @@ class DatabaseManager extends Database implements DatabaseManagerInterface
         }
     }
 
-    private function deleteWordsTableData():void
+    private function deleteWordsTableData(): void
     {
         $pdoQuery = "DELETE FROM Words";
 //        $pdoQuery = "DELETE FROM Patterns WHERE";
@@ -180,7 +181,7 @@ class DatabaseManager extends Database implements DatabaseManagerInterface
         }
     }
 
-    private function deletePatternsData():void
+    private function deletePatternsData(): void
     {
         $pdoQuery = "DELETE FROM Patterns";
 //        $pdoQuery = "DELETE FROM Patterns WHERE";
@@ -193,8 +194,4 @@ class DatabaseManager extends Database implements DatabaseManagerInterface
             echo 'ERROR Data Not Deleted';
         }
     }
-
-
-
-
 }

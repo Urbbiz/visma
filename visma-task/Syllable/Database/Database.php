@@ -8,12 +8,12 @@ use PDOException;
 class Database
 {
     private string $userName = "syllable";
-    private string  $serverName = "localhost";
-    private string  $password = "Syllable_53258";
-    private string  $database = "syllable";
-    private string  $charset = "utf8mb4";   //default set
+    private string $serverName = "localhost";
+    private string $password = "Syllable_53258";
+    private string $database = "syllable";
+    private string $charset = "utf8mb4";   //default set
 
-    public function connect():PDO
+    public function connect(): PDO
     {
         try {
             $dsn = "mysql:host=$this->serverName;dbname=$this->database;charset=$this->charset;";  //data source name
@@ -26,9 +26,8 @@ class Database
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             return $pdo;
-
         } catch (PDOException $e) {
-            echo "Connection failed: ". $e->getMessage();
+            echo "Connection failed: " . $e->getMessage();
         }
 //
     }
@@ -38,7 +37,7 @@ class Database
         $statement = self::connect()->prepare($query);
         $statement->execute($params);
 
-        if (explode(' ', $query)[0] == 'SELECT'){
+        if (explode(' ', $query)[0] == 'SELECT') {
             $data = $statement->fetchAll();
             return $data;
         }

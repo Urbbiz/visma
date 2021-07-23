@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types =1);
+declare(strict_types=1);
 
 namespace Syllable\Api;
 
@@ -17,38 +17,31 @@ class Router
     public static $validRoutes = array();
 
 
-    public function  get(string $path, $handler): void
+    public function get(string $path, $handler): void
     {
-       $this->addHandler(self::METHOD_GET, $path, $handler);
-        self::$validRoutes[]= $path;
+        $this->addHandler(self::METHOD_GET, $path, $handler);
+        self::$validRoutes[] = $path;
 //    print_r(self::$validRoutes);
-
-
     }
 
     public function post(string $path, $handler): void
     {
-        $this->addHandler( self::METHOD_POST, $path, $handler);
-
+        $this->addHandler(self::METHOD_POST, $path, $handler);
     }
 
     public function delete(string $path, $handler): void
     {
-        $this->addHandler( self::METHOD_DELETE, $path, $handler);
-
-
+        $this->addHandler(self::METHOD_DELETE, $path, $handler);
     }
 
     public function put(string $path, $handler): void
     {
-        $this->addHandler( self::METHOD_PUT, $path, $handler);
-
-
+        $this->addHandler(self::METHOD_PUT, $path, $handler);
     }
 
 
 
-    public  function  run()
+    public function run()
     {
         $requestUri = parse_url($_SERVER['REQUEST_URI']);
         $requestPath = $requestUri['path'];
@@ -59,15 +52,13 @@ class Router
 
         $callback = null;
         foreach ($this->handlers as $handler) {
-
-
-            if (stripos($requestPath, $handler['path']) ==0 && $method === $handler['method']) {  // check for finding correct handler
+            if (stripos($requestPath, $handler['path']) == 0 && $method === $handler['method']) {  // check for finding correct handler
                 $callback = $handler['handler'];
             }
         }
-        if(!$callback) {
+        if (!$callback) {
             header("HTTP/1.0 404 NOT FOUND");
-            if(!empty($this->notFoundHandler)) {
+            if (!empty($this->notFoundHandler)) {
                 $callback = $this->notFoundHandler;
             }
         }
@@ -84,17 +75,12 @@ class Router
 
 
 
-    private  function  addHandler(string  $method, string $path, $handler): void
+    private function addHandler(string $method, string $path, $handler): void
     {
-        $this->handlers[$method . $path] =[
+        $this->handlers[$method . $path] = [
             'path' => $path,
             'method' => $method,
             'handler' => $handler,
         ];
-
-
     }
-
-
-
 }

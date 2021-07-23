@@ -1,14 +1,13 @@
 <?php
+
 namespace Syllable\PatternModel;
 
 use Syllable\PatternModel;
 
-
-
 class PatternExtractor implements PatternExtractorInterface
 {
     // isspausdina values is txt filo
-    public  function getPatterns($filePath): PatternCollection
+    public function getPatterns($filePath): PatternCollection
     {
         $result = new PatternCollection();
         $file = new \SplFileObject($filePath);

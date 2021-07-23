@@ -2,15 +2,15 @@
 
 namespace Syllable\PatternModel;
 
+class PatternCollection
+{
 
-class PatternCollection {
-
-    private array $patterns=[];
+    private array $patterns = [];
 
 
     function addPattern(Pattern $pattern): void
     {
-        $this->patterns[]= $pattern;
+        $this->patterns[] = $pattern;
     }
 
     function getPatterns(): array
@@ -18,4 +18,3 @@ class PatternCollection {
         return $this->patterns;
     }
 }
-

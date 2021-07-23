@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Syllable\Api;
-
 
 use Syllable\Controllers\WordsController;
 
@@ -11,14 +9,14 @@ class RoutesDefiner
     private Router $router;
     private WordsController $wordsController;
 
-    public function __construct(Router $router, WordsController  $wordsController)
+    public function __construct(Router $router, WordsController $wordsController)
     {
 
         $this->router = $router;
         $this->wordsController = $wordsController;
     }
 
-    public function defineRoutes ()
+    public function defineRoutes()
     {
 
         $this->router->get('/visma-task/', function () {
@@ -35,22 +33,20 @@ class RoutesDefiner
         $this->router->get('/visma-task/words', function () {
 
             $this->wordsController->getWords();
-
         });
 
 
         $this->router->post('/visma-task/words', function () {
-            $body = (array)json_decode(file_get_contents('php://input'), TRUE);
+            $body = (array)json_decode(file_get_contents('php://input'), true);
 
             $this->wordsController->postWord($body["givenWord"]);
-
         });
 
-        $this->router->put('/visma-task/words', function ()  //word/Marius
-        {
+        $this->router->put('/visma-task/words', function () {
+  //word/Marius
             $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             $uri = explode('/', $uri);
-            $body = (array)json_decode(file_get_contents('php://input'), TRUE);
+            $body = (array)json_decode(file_get_contents('php://input'), true);
 
             if ($uri[2] !== 'words') {
                 header("HTTP/1.1 404 Not Found");
@@ -67,8 +63,8 @@ class RoutesDefiner
         });
 
 
-        $this->router->delete('/visma-task/words', function ()  //word/Marius
-        {
+        $this->router->delete('/visma-task/words', function () {
+  //word/Marius
             $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             $uri = explode('/', $uri);
 
@@ -84,7 +80,7 @@ class RoutesDefiner
             $this->wordsController->deleteWord($givenWord);
         });
 
-        $this->router->addNotFoundHandler(function (){
+        $this->router->addNotFoundHandler(function () {
             echo 'not found';
         });
     }

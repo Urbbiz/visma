@@ -1,10 +1,8 @@
 <?php
-namespace Syllable\PatternModel;
 
+namespace Syllable\PatternModel;
 
 interface PatternExtractorInterface
 {
-    public function  getPatterns($filePath) : PatternCollection;  // grazina PatternCollection klases objekta
-
-
+    public function getPatterns($filePath): PatternCollection;  // grazina PatternCollection klases objekta
 }

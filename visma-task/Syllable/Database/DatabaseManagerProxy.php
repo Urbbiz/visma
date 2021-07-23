@@ -1,21 +1,17 @@
 <?php
+
 namespace Syllable\Database;
-
-
-
 
 use Syllable\Database\DatabaseManagerProxyInterface;
 use Syllable\PatternModel\PatternCollection;
 
-
-
 class DatabaseManagerProxy implements DatabaseManagerProxyInterface
 {
 
-    private ?PatternCollection $patternCollection = NULL;   // Cache rezultata
+    private ?PatternCollection $patternCollection = null;   // Cache rezultata
 
-    private array $Words= [];   //tables in database;
-    private array $Patterns= [];
+    private array $Words = [];   //tables in database;
+    private array $Patterns = [];
     private array $WordPatterns = [];
     private DatabaseManager $dataBaseManager;
 
@@ -36,8 +32,7 @@ class DatabaseManagerProxy implements DatabaseManagerProxyInterface
     public function getAllWords(): array
     {
         if (count($this->Words) === 0) {
-
-           $this->Words = $this->dataBaseManager->getAllWords();
+            $this->Words = $this->dataBaseManager->getAllWords();
         }
 
         return $this->Words;

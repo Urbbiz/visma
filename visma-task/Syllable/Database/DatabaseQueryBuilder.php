@@ -1,13 +1,11 @@
 <?php
 
-
 namespace Syllable\Database;
-
 
 class DatabaseQueryBuilder
 {
     private array $fields = [];
-    private string $from ='';
+    private string $from = '';
     private array $where = [];
 
     public function select(array $fields = ['*']): DatabaseQueryBuilder // jeigu nepaduodu jokio fields, imes automatiskai zvaigzdute
@@ -30,13 +28,15 @@ class DatabaseQueryBuilder
 
     public function __toString(): string
     {
-        $selectString = sprintf('SELECT %s FROM %s',
+        $selectString = sprintf(
+            'SELECT %s FROM %s',
             join(', ', $this->fields),
             $this->from
         );
 
         if (!empty($this->where)) {
-            $whereString = sprintf(' WHERE %s',
+            $whereString = sprintf(
+                ' WHERE %s',
                 join(' AND', $this->where)
             );
             $selectString .= $whereString;
@@ -44,8 +44,4 @@ class DatabaseQueryBuilder
 
         return $selectString;
     }
-
-
-
-
 }

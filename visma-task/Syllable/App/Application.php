@@ -1,4 +1,5 @@
 <?php
+
 namespace Syllable\App;
 
 use Syllable\Database\Database;
@@ -13,7 +14,7 @@ use Syllable\IO\UserInputReader;
 
 class Application
 {
-    public function runApp ()
+    public function runApp()
     {
         $databaseManager = new DatabaseManager();
         $patternExtractor = new PatternExtractor();
@@ -28,7 +29,7 @@ class Application
 
         $input = trim(fgets(STDIN, 1024));
 
-        switch ($input){
+        switch ($input) {
             case 1:
                 $syllableAlgorithm->syllableSentence();
                 break;
@@ -43,7 +44,5 @@ class Application
                 $databaseManager->deleteAllTablesData();
                 break;
         }
-
     }
-
 }

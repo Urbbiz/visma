@@ -2,8 +2,6 @@
 
 namespace Syllable\Service;
 
-
-
 use Syllable\Database\DatabaseManagerInterface;
 use Syllable\IO\UserInputReaderInterface;
 use Syllable\IO\ExtractionValues;
@@ -11,64 +9,61 @@ use Syllable\PatternModel\PatternCollection;
 use Syllable\App\Logger;
 use Syllable\PatternModel\PatternExtractorInterface;
 
-
 class SyllableAlgorithm implements SyllableAlgorithmInterface
 {
     private DatabaseManagerInterface $databaseManager;
     private UserInputReaderInterface $userInputReader;
     private PatternExtractorInterface $patternExtractor;
 
-    public function __construct(DatabaseManagerInterface $databaseManager,
-                                UserInputReaderInterface $userInputReader,
-                                PatternExtractorInterface $patternExtractor)
-    {
+    public function __construct(
+        DatabaseManagerInterface $databaseManager,
+        UserInputReaderInterface $userInputReader,
+        PatternExtractorInterface $patternExtractor
+    ) {
         $this->databaseManager = $databaseManager;
         $this->userInputReader = $userInputReader;
         $this->patternExtractor = $patternExtractor;
     }
 
 
-    function  syllable(string $givenWord, PatternCollection $patternResult): SyllableResult
+    function syllable(string $givenWord, PatternCollection $patternResult): SyllableResult
     {
-        $givenWord =$this->addDots($givenWord);// uzdedam taskus is priekio ir galo duotam zodziui
+        $givenWord = $this->addDots($givenWord);// uzdedam taskus is priekio ir galo duotam zodziui
 
         $syllableResult = new SyllableResult();
 
-        $foundValues= [];
-        foreach ($patternResult->getPatterns()as $pattern){  // einam per masyva be skaiciu
-
+        $foundValues = [];
+        foreach ($patternResult->getPatterns() as $pattern) {  // einam per masyva be skaiciu
             $addedResult = false;
-            $found=false;
+            $found = false;
             do {                          // ieskom skiemens givenWorde
                 $offset = 0;
                 if ($found != false) {    // jeigu randa atitikmeni
-
                     $offset = $found + 1;    // found pozicija kur rado, nustatom offset, kad ieskotu nuo toliau, negu rado
                     $snippet = $pattern->__toString();  // pasiimam is paduoto masyvo lygiai ta pati ka radom, tik su skaiciais.
 
-                    if($addedResult == false){   // <---apsisaugojam nuo pasikartojanciu patternu.
-                        $syllableResult->matchedPatterns[]= $snippet;
+                    if ($addedResult == false) {   // <---apsisaugojam nuo pasikartojanciu patternu.
+                        $syllableResult->matchedPatterns[] = $snippet;
                         $addedResult = true;
                     }
 
                     $snippetIndex = 0;   // char indexas skiemenyje, kuri radom(mis3)
 
-                    for($i= 0; $i < strlen($snippet); $i++ ){
+                    for ($i = 0; $i < strlen($snippet); $i++) {
                         $number = intval($snippet[$i]);  //tai yra pvz m raide ir bando , jeigu ne skaicius, grazins nuli, nes pas mus nera nulio.
-                        if($number > 0 ){   // jeigu daugiau uz 0 , reiskia rado skaiciu (3)
-                            $index = $snippetIndex + $found -1;  // inexas tai yra vieta po kurio irasinesim ta skaiciu , musu duotame zodyje.
-                            if (!array_key_exists($index, $foundValues) || $foundValues[$index] < $number ){ // tikrinam ar jau buvo toks indexas tame masyve, jeigu buvo  tai irasom didesni, jeigu nebuvo, tai tiesiog ierasom nauja
+                        if ($number > 0) {   // jeigu daugiau uz 0 , reiskia rado skaiciu (3)
+                            $index = $snippetIndex + $found - 1;  // inexas tai yra vieta po kurio irasinesim ta skaiciu , musu duotame zodyje.
+                            if (!array_key_exists($index, $foundValues) || $foundValues[$index] < $number) { // tikrinam ar jau buvo toks indexas tame masyve, jeigu buvo  tai irasom didesni, jeigu nebuvo, tai tiesiog ierasom nauja
                                 $foundValues[$index] = $number;
                             }
-                        }else {
-                            $snippetIndex ++;   // didins kai tik atras raide, o ne skaiciu
+                        } else {
+                            $snippetIndex++;   // didins kai tik atras raide, o ne skaiciu
                         }
                     }
                     // echo "positionInWord: ". $found .", value: " . $patternResult->RawPatterns[$key] . "\n";
                 }
                 $found = stripos($givenWord, $pattern->getPatternWithoutNumbers(), $offset);  // ieskom value duotam zodyje , nuo vietos kuria nurodo offset.
-
-            }while($found != false);   // sukam cikla tol, kol randam zodyje kelis skiemenu atitikmenis
+            } while ($found != false);   // sukam cikla tol, kol randam zodyje kelis skiemenu atitikmenis
         }
 
         $syllableResult->dashResult = $this->numbersToDash($givenWord, $foundValues);
@@ -82,70 +77,70 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
     private function insertNumbers($givenWord, $foundValues)
     {
         $finalResult = "";
-        for ($i=0; $i < strlen($givenWord) ; $i++) {
+        for ($i = 0; $i < strlen($givenWord); $i++) {
             $finalResult .=  $givenWord[$i];  // pridedam raide
-            if(array_key_exists($i,$foundValues)) {
+            if (array_key_exists($i, $foundValues)) {
                 $finalResult .=  $foundValues[$i];   // pridedam skaiciu
             }
         }
-        return trim($finalResult,".");
+        return trim($finalResult, ".");
     }
 
 
     private function numbersToDash($givenWord, $foundValues)
     {
         $finalResult = "";
-        for ($i=0; $i < strlen($givenWord) ; $i++) {
+        for ($i = 0; $i < strlen($givenWord); $i++) {
             $finalResult .=  $givenWord[$i];  // pridedam raide
-            if(array_key_exists($i,$foundValues ) && $foundValues[$i]% 2 ==1 ){
+            if (array_key_exists($i, $foundValues) && $foundValues[$i] % 2 == 1) {
                 $finalResult .=  "-";   // jeigu egzistuoja ir nelyginis pakeiciam i -
             }
         }
 
-        return trim($finalResult,".");
+        return trim($finalResult, ".");
     }
 
 
     // <--------prideda taskus prie duoto zodzio pradzioj ir gale-------->
     protected function addDots($givenWord)
     {
-        $givenWord = ".".$givenWord.".";  // uzdedam taskus
+        $givenWord = "." . $givenWord . ".";  // uzdedam taskus
 
         return $givenWord;
     }
 
 
-    public function syllableUsingDataBase($givenWord):SyllableResult
+    public function syllableUsingDataBase($givenWord): SyllableResult
     {
 
         $patternsCollection = $this->databaseManager->getAllPatterns();
 
-        if(count($patternsCollection->getPatterns())==0) {
+        if (count($patternsCollection->getPatterns()) == 0) {
             $this->databaseManager->setPatternsToDatabase(DIR . "data/inputfile.txt");
         }
 
         $this->databaseManager->getAllPatterns();
         $wordInDatabase = $this->databaseManager->getWord($givenWord);
 
-        if($wordInDatabase !==false){
+        if ($wordInDatabase !== false) {
             $result = new SyllableResult();
-            $result->dashResult= $wordInDatabase['syllableValue'];
+            $result->dashResult = $wordInDatabase['syllableValue'];
             $id = $wordInDatabase['id'];
             $result->matchedPatterns = $this->databaseManager->getRelatedPatterns($id);
             return $result;
-        }else {
+        } else {
             $patternsCollection = $this->databaseManager->getAllPatterns();
             $syllableResult = $this->syllable($givenWord, $patternsCollection);
             $this->databaseManager->addWord($givenWord, $syllableResult->dashResult);
             $wordInDatabase = $this->databaseManager->getWord($givenWord);
             $id = $wordInDatabase['id'];
-            $patternIds= $this->databaseManager->getPatternIds($syllableResult->matchedPatterns);
-            $this->databaseManager->addRelatedPatterns($id,$patternIds);
+            $patternIds = $this->databaseManager->getPatternIds($syllableResult->matchedPatterns);
+            $this->databaseManager->addRelatedPatterns($id, $patternIds);
             return $syllableResult;
         }
     }
 
-    public  function syllableWord()
+    public function syllableWord()
     {
         $logger = new Logger();
 
@@ -162,10 +157,9 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
         echo "Execution time: $executionTime seconds";
 
         $logger->info("Syllable method took{$executionTime} seconds, syllabed word; {$givenWord}.");
-
     }
 
-    public function  syllableSentence()
+    public function syllableSentence()
     {
         echo "You chose to syllable SENTENCE" . "\n";
 
@@ -180,5 +174,4 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
         }
         exit(0);
     }
-
 }
