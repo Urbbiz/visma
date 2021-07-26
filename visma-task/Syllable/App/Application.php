@@ -23,7 +23,7 @@ class Application
         $patternExtractor = new PatternExtractor();
         $userInputReader = new UserInputReader();
         $logger = new Logger();
-        $syllableAlgorithm = new SyllableAlgorithm($databaseManager, $userInputReader, $patternExtractor,$logger);
+        $syllableAlgorithm = new SyllableAlgorithm($databaseManager, $userInputReader, $patternExtractor, $logger);
 
         echo "Press: " . "\n";
         echo "1: Syllable SENTENCE" . "\n";
@@ -39,7 +39,7 @@ class Application
 //                $syllableAlgorithm->syllableWord();
                 $syllableSentence = $syllableAlgorithm->syllableSentence();
 //
-                Echo"Syllable result: : ". $syllableSentence;
+                echo"Syllable result: : " . $syllableSentence;
                 break;
             case 2:
                 $startTime = microtime(true); // laiko pradzia
@@ -49,7 +49,6 @@ class Application
                 $executionTime = round($endTime - $startTime, 4); // programos veikimo laikas suapvalintas iki 4 skaiciu po kablelio
                 echo "Execution time: $executionTime seconds ";
                 echo "Syllable result: " . $syllableResult->dashResult . "\n";   // parodo isskiemenuota zodi.
-                echo "Result with numbers: ". $syllableResult->withNumbers. "\n";
                 $logger->info("Syllable method took{$executionTime} seconds");
                 break;
             case 3:

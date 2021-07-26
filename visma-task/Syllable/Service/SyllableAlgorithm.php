@@ -17,7 +17,7 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
     private DatabaseManagerInterface $databaseManager;
     private UserInputReaderInterface $userInputReader;
     private PatternExtractorInterface $patternExtractor;
-    private LoggerInterface  $logger;
+    private LoggerInterface $logger;
 
     public function __construct(
         DatabaseManagerInterface $databaseManager,
@@ -72,7 +72,6 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
                 }
 //                echo $givenWord." / ". $pattern->getPatternWithoutNumbers()." / ". $offset. "\n";
                 $found = stripos($givenWord, $pattern->getPatternWithoutNumbers(), $offset);  // ieskom value duotam zodyje , nuo vietos kuria nurodo offset.
-
             } while ($found !== false);   // sukam cikla tol, kol randam zodyje kelis skiemenu atitikmenis
         }
 
@@ -102,7 +101,6 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
             var_dump($result->matchedPatterns = $this->databaseManager->getRelatedPatterns($id));
             return $result;
         } else {
-
             $patternsCollection = $this->databaseManager->getAllPatterns();
             $syllableResult = $this->syllable($givenWord, $patternsCollection);
             $this->databaseManager->addWord($givenWord, $syllableResult->dashResult);
@@ -112,7 +110,6 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
             $this->databaseManager->addRelatedPatterns($id, $patternIds);
 
             return $syllableResult;
-
         }
     }
 
@@ -140,7 +137,7 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
         $syllableSentence = '';
         foreach ($sentenceToWordArray as $word) {
             $syllableWord = $this-> syllable($word, $patternsResult);
-            $syllableSentence .= $syllableWord->dashResult ." ";
+            $syllableSentence .= $syllableWord->dashResult . " ";
         }
         return $syllableSentence;
         exit(0);
@@ -181,5 +178,4 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
 
         return $givenWord;
     }
-
 }

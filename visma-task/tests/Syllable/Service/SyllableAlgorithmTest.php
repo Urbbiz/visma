@@ -153,14 +153,14 @@ class SyllableAlgorithmTest extends TestCase
     public function TestSyllableSentenceProvider()
     {
         return [
-            ["Mistranslate Andrius!!!", "Mis-trans-late An-drius!!! ", "M2is1t4ra2n2s3l2ate 4A2n1dri2us!!!",13]
+            ["Mistranslate Andrius!!!", "Mis-trans-late An-drius!!! ", "M2is1t4ra2n2s3l2ate "]
         ];
     }
 
     /**
      * @dataProvider TestSyllableSentenceProvider()
      */
-    public function testsyllableSentence($givenSentence, $expectedDashResult, $expectedWithNumbers, $expectedCount){
+    public function testsyllableSentence($givenSentence, $expectedDashResult){
         $databaseManager =  $this->createMock(DatabaseManagerInterface::class);
         $userInputReader =  $this->createMock(UserInputReaderInterface::class);
         $patternExtractor = $this->createMock(PatternExtractorInterface::class);
