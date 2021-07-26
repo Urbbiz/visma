@@ -33,7 +33,7 @@ class UserInputReader implements UserInputReaderInterface
     {
 
         $sentenceWordArray = preg_split("/[^\w]*([\s]+[^\w]*)/", $givenSentence);
-
+//var_dump($sentenceWordArray);
         return $sentenceWordArray;
     }
 }
