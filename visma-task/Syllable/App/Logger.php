@@ -5,6 +5,8 @@ namespace Syllable\App;
 use  Psr\Log\LoggerInterface;
 use  Psr\Log\LogLevel;
 
+//const DIR = __DIR__ . '/';   //constants case sensitive
+
 class Logger implements LoggerInterface
 {
     private $loggers;

@@ -2,9 +2,12 @@
 
 namespace Syllable\Service;
 
+use PhpParser\Node\Stmt\Echo_;
+use Psr\Log\LoggerInterface;
 use Syllable\Database\DatabaseManagerInterface;
 use Syllable\IO\UserInputReaderInterface;
 use Syllable\IO\ExtractionValues;
+use Syllable\PatternModel\Pattern;
 use Syllable\PatternModel\PatternCollection;
 use Syllable\App\Logger;
 use Syllable\PatternModel\PatternExtractorInterface;
@@ -14,15 +17,18 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
     private DatabaseManagerInterface $databaseManager;
     private UserInputReaderInterface $userInputReader;
     private PatternExtractorInterface $patternExtractor;
+    private LoggerInterface  $logger;
 
     public function __construct(
         DatabaseManagerInterface $databaseManager,
         UserInputReaderInterface $userInputReader,
-        PatternExtractorInterface $patternExtractor
+        PatternExtractorInterface $patternExtractor,
+        LoggerInterface $logger
     ) {
         $this->databaseManager = $databaseManager;
         $this->userInputReader = $userInputReader;
         $this->patternExtractor = $patternExtractor;
+        $this->logger = $logger;
     }
 
 
@@ -34,11 +40,12 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
 
         $foundValues = [];
         foreach ($patternResult->getPatterns() as $pattern) {  // einam per masyva be skaiciu
+//            echo "\n".$pattern->__toString()."\n";
             $addedResult = false;
             $found = false;
             do {                          // ieskom skiemens givenWorde
                 $offset = 0;
-                if ($found != false) {    // jeigu randa atitikmeni
+                if ($found !== false) {    // jeigu randa atitikmeni
                     $offset = $found + 1;    // found pozicija kur rado, nustatom offset, kad ieskotu nuo toliau, negu rado
                     $snippet = $pattern->__toString();  // pasiimam is paduoto masyvo lygiai ta pati ka radom, tik su skaiciais.
 
@@ -51,6 +58,7 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
 
                     for ($i = 0; $i < strlen($snippet); $i++) {
                         $number = intval($snippet[$i]);  //tai yra pvz m raide ir bando , jeigu ne skaicius, grazins nuli, nes pas mus nera nulio.
+//                        echo $snippet[$i]."*";
                         if ($number > 0) {   // jeigu daugiau uz 0 , reiskia rado skaiciu (3)
                             $index = $snippetIndex + $found - 1;  // inexas tai yra vieta po kurio irasinesim ta skaiciu , musu duotame zodyje.
                             if (!array_key_exists($index, $foundValues) || $foundValues[$index] < $number) { // tikrinam ar jau buvo toks indexas tame masyve, jeigu buvo  tai irasom didesni, jeigu nebuvo, tai tiesiog ierasom nauja
@@ -62,8 +70,10 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
                     }
                     // echo "positionInWord: ". $found .", value: " . $patternResult->RawPatterns[$key] . "\n";
                 }
+//                echo $givenWord." / ". $pattern->getPatternWithoutNumbers()." / ". $offset. "\n";
                 $found = stripos($givenWord, $pattern->getPatternWithoutNumbers(), $offset);  // ieskom value duotam zodyje , nuo vietos kuria nurodo offset.
-            } while ($found != false);   // sukam cikla tol, kol randam zodyje kelis skiemenu atitikmenis
+
+            } while ($found !== false);   // sukam cikla tol, kol randam zodyje kelis skiemenu atitikmenis
         }
 
         $syllableResult->dashResult = $this->numbersToDash($givenWord, $foundValues);
@@ -72,6 +82,69 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
     }
 
 
+
+    public function syllableUsingDataBase($givenWord): SyllableResult
+    {
+        $patternsCollection = $this->databaseManager->getAllPatterns();
+
+        if (count($patternsCollection->getPatterns()) == 0) {
+            $this->databaseManager->setPatternsToDatabase(DIR . "data/inputfile.txt");
+        }
+
+        $this->databaseManager->getAllPatterns();
+        $wordInDatabase = $this->databaseManager->getWord($givenWord);
+
+        if ($wordInDatabase !== false) {
+            $result = new SyllableResult();
+            $result->dashResult = $wordInDatabase['syllableValue'];
+            $id = $wordInDatabase['id'];
+            $result->matchedPatterns = $this->databaseManager->getRelatedPatterns($id);
+            var_dump($result->matchedPatterns = $this->databaseManager->getRelatedPatterns($id));
+            return $result;
+        } else {
+
+            $patternsCollection = $this->databaseManager->getAllPatterns();
+            $syllableResult = $this->syllable($givenWord, $patternsCollection);
+            $this->databaseManager->addWord($givenWord, $syllableResult->dashResult);
+            $wordInDatabase = $this->databaseManager->getWord($givenWord);
+            $id = $wordInDatabase['id'];
+            $patternIds = $this->databaseManager->getPatternIds($syllableResult->matchedPatterns);
+            $this->databaseManager->addRelatedPatterns($id, $patternIds);
+
+            return $syllableResult;
+
+        }
+    }
+
+    public function syllableWord()
+    {
+
+        $givenWord = $this->userInputReader->getInputWord();  // paduoda ivesta zodi
+        $patternsResult = $this->patternExtractor->getPatterns(DIR . "data/inputfile.txt"); // issitraukiam txt failo turini.
+
+        $syllableResult = $this->syllable($givenWord, $patternsResult);
+
+//        echo "Syllable result: " . $syllableResult->dashResult . "\n";   // parodo isskiemenuota zodi.
+
+        $this->logger->info("Syllable method syllabed word; {$givenWord}.");
+
+
+        return $syllableResult;
+    }
+
+    public function syllableSentence()
+    {
+        $givenSentence = $this->userInputReader->getInputSentence();  // paduoda ivesta zodi
+        $sentenceToWordArray = $this->userInputReader->getSentenceWordsInArray($givenSentence);
+        $patternsResult = $this->patternExtractor->getPatterns(DIR . "data/inputfile.txt"); // issitraukiam txt failo turini.
+        $syllableSentence = '';
+        foreach ($sentenceToWordArray as $word) {
+            $syllableWord = $this-> syllable($word, $patternsResult);
+            $syllableSentence .= $syllableWord->dashResult ." ";
+        }
+        return $syllableSentence;
+        exit(0);
+    }
 
     // <--------pakeicia nelyginius skaicius i -   ir isveda galutini atsakyma-------->
     private function insertNumbers($givenWord, $foundValues)
@@ -109,69 +182,4 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
         return $givenWord;
     }
 
-
-    public function syllableUsingDataBase($givenWord): SyllableResult
-    {
-
-        $patternsCollection = $this->databaseManager->getAllPatterns();
-
-        if (count($patternsCollection->getPatterns()) == 0) {
-            $this->databaseManager->setPatternsToDatabase(DIR . "data/inputfile.txt");
-        }
-
-        $this->databaseManager->getAllPatterns();
-        $wordInDatabase = $this->databaseManager->getWord($givenWord);
-
-        if ($wordInDatabase !== false) {
-            $result = new SyllableResult();
-            $result->dashResult = $wordInDatabase['syllableValue'];
-            $id = $wordInDatabase['id'];
-            $result->matchedPatterns = $this->databaseManager->getRelatedPatterns($id);
-            return $result;
-        } else {
-            $patternsCollection = $this->databaseManager->getAllPatterns();
-            $syllableResult = $this->syllable($givenWord, $patternsCollection);
-            $this->databaseManager->addWord($givenWord, $syllableResult->dashResult);
-            $wordInDatabase = $this->databaseManager->getWord($givenWord);
-            $id = $wordInDatabase['id'];
-            $patternIds = $this->databaseManager->getPatternIds($syllableResult->matchedPatterns);
-            $this->databaseManager->addRelatedPatterns($id, $patternIds);
-            return $syllableResult;
-        }
-    }
-
-    public function syllableWord()
-    {
-        $logger = new Logger();
-
-        $givenWord = $this->userInputReader->getInputWord();  // paduoda ivesta zodi
-        $startTime = microtime(true); // laiko pradzia
-        $patternsResult = $this->patternExtractor->getPatterns(DIR . "data/inputfile.txt"); // issitraukiam txt failo turini.
-
-        $syllableResult = $this->syllable($givenWord, $patternsResult);
-
-        echo "Syllable result: " . $syllableResult->dashResult . "\n";   // parodo isskiemenuota zodi.
-
-        $endTime = microtime(true); //laiko pabaiga
-        $executionTime = round($endTime - $startTime, 4); // programos veikimo laikas suapvalintas iki 4 skaiciu po kablelio
-        echo "Execution time: $executionTime seconds";
-
-        $logger->info("Syllable method took{$executionTime} seconds, syllabed word; {$givenWord}.");
-    }
-
-    public function syllableSentence()
-    {
-        echo "You chose to syllable SENTENCE" . "\n";
-
-        $givenSentence = $this->userInputReader->getInputSentence();  // paduoda ivesta zodi
-        $sentenceToWordArray = $this->userInputReader->getSentenceWordsInArray($givenSentence);
-        $patternsResult = $this->patternExtractor->getPatterns(DIR . "data/inputfile.txt"); // issitraukiam txt failo turini.
-        $syllableSentence = '';
-        foreach ($sentenceToWordArray as $word) {
-            $syllableWord = $this-> syllable($word, $patternsResult);
-            $syllableSentence .= $syllableWord->dashResult;
-            echo $syllableWord->dashResult . " ";
-        }
-        exit(0);
-    }
 }

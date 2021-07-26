@@ -1,7 +1,12 @@
 {
     "autoload": {
         "psr-4": {
-
+            "Syllable\\": "Syllable/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Test\\": "tests/"
         }
     },
     "require": {

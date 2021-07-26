@@ -43,7 +43,6 @@ class RoutesDefiner
         });
 
         $this->router->put('/visma-task/words', function () {
-  //word/Marius
             $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             $uri = explode('/', $uri);
             $body = (array)json_decode(file_get_contents('php://input'), true);
