@@ -16,6 +16,10 @@ class Pattern
     private string $rawPattern;
     private string $patternNoNumbers;
 
+    public  function getPatternString():string
+    {
+        return $this->rawPattern;
+    }
 
     function __toString(): string
     {

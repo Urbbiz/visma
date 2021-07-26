@@ -20,4 +20,10 @@ class PatternTest extends TestCase
         $this->assertInstanceOf(Pattern::class, $pattern);
     }
 
+    function  testGetPatternString()
+    {
+        $pattern = new Pattern("Andrius");
+        $this->assertEquals('Andrius',$pattern->getPatternString());
+    }
+
 }
