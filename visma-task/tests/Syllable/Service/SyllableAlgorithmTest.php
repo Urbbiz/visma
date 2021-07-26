@@ -1,6 +1,7 @@
 <?php
 namespace Syllable\Service;
 
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Syllable\Database\DatabaseManagerInterface;
 use Syllable\IO\UserInputReaderInterface;
@@ -11,7 +12,7 @@ use Syllable\PatternModel\PatternExtractorInterface;
 const DIR = __DIR__ . '/';   //constants case sensitive
 
 
-class SyllableAlgorithmTest extends \PHPUnit\Framework\TestCase
+class SyllableAlgorithmTest extends TestCase
 {
     public function testSyllable(){
         $databaseManager =  $this->createMock(DatabaseManagerInterface::class);
@@ -34,12 +35,12 @@ class SyllableAlgorithmTest extends \PHPUnit\Framework\TestCase
 
     public function TestSyllableWordProvider()
     {
-        return array(
-            array("Mandrius", "Mandrius", "Mandri2us",1),
-            array("Andrius", "An-drius", "An3dri2us",2),
-            array("Andrejus", "An-drejus", "An3drejus",1),
-            array("Marius", "Marius", "Marius",0)
-        );
+        return [
+            ["Mandrius", "Mandrius", "Mandri2us",1],
+            ["Andrius", "An-drius", "An3dri2us",2],
+            ["Andrejus", "An-drejus", "An3drejus",1],
+            ["Marius", "Marius", "Marius",0]
+        ];
     }
 
     /**
@@ -70,5 +71,7 @@ class SyllableAlgorithmTest extends \PHPUnit\Framework\TestCase
 //        var_dump($result->matchedPatterns);
         $this->assertCount($expectedCount, $result->matchedPatterns);
     }
+
+
 
 }

@@ -32,7 +32,7 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
     }
 
 
-    function syllable(string $givenWord, PatternCollection $patternResult): SyllableResult
+    public function syllable(string $givenWord, PatternCollection $patternResult): SyllableResult
     {
         $givenWord = $this->addDots($givenWord);// uzdedam taskus is priekio ir galo duotam zodziui
 

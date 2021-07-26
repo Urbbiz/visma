@@ -1,10 +1,11 @@
 <?php
 
+namespace Syllable\Controllers;
 
-use Syllable\Controllers\WordsController;
+use PHPUnit\Framework\TestCase;
 use Syllable\Database\DatabaseManagerInterface;
 
-class WordsControllerTest extends \PHPUnit\Framework\TestCase
+class WordsControllerTest extends TestCase
 {
 
     public function testPOST()
