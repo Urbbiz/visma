@@ -60,12 +60,12 @@ class Application
                 $databaseManager->deleteAllTablesData();
                 break;
             case 5:
-                $patternCollection = new PatternCollection();
-                $patternCollection->addPattern(new Pattern('.An3'));
-                $patternCollection->addPattern(new Pattern('dri2us'));
-                $result = $syllableAlgorithm->syllable("Andrius", $patternCollection);
-                var_dump($result);
-                break;
+//                $patternCollection = new PatternCollection();
+//                $patternCollection->addPattern(new Pattern('.An3'));
+//                $patternCollection->addPattern(new Pattern('dri2us'));
+//                $result = $syllableAlgorithm->syllable("Andrius", $patternCollection);
+//                var_dump($result);
+//                break;
         }
     }
 }

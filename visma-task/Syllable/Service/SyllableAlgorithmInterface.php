@@ -7,7 +7,7 @@ use Syllable\PatternModel\PatternCollection;
 
 interface SyllableAlgorithmInterface
 {
-    public function syllable(string $givenWord, PatternCollection $patternResult): SyllableResult;
+//    public function syllable(string $givenWord, PatternCollection $patternResult): SyllableResult;
 
     public function syllableUsingDataBase($givenWord): SyllableResult;
 
