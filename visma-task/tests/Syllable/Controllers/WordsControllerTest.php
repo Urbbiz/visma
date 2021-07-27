@@ -13,9 +13,6 @@ class WordsControllerTest extends TestCase
         $databaseManager =  $this->createMock(DatabaseManagerInterface::class);
         $databaseManagerProxy = $this->createMock(\Syllable\Database\DatabaseManagerProxyInterface::class);
         $syllableAlgorithm = $this->createMock(\Syllable\Service\SyllableAlgorithmInterface::class);
-        $wordsController = new WordsController($databaseManager,$databaseManagerProxy,$syllableAlgorithm);
-
-
+        $wordsController = new WordsController($databaseManager, $databaseManagerProxy, $syllableAlgorithm);
     }
-
 }

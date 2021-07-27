@@ -1,6 +1,5 @@
 <?php
 
-
 use PHPUnit\Framework\TestCase;
 use Syllable\PatternModel\Pattern;
 use Syllable\PatternModel\PatternCollection;
@@ -20,10 +19,9 @@ class PatternTest extends TestCase
         $this->assertInstanceOf(Pattern::class, $pattern);
     }
 
-    function  testGetPatternString()
+    function testGetPatternString()
     {
         $pattern = new Pattern("Andrius");
-        $this->assertEquals('Andrius',$pattern->getPatternString());
+        $this->assertEquals('Andrius', $pattern->getPatternString());
     }
-
 }

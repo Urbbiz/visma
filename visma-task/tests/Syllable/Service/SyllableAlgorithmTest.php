@@ -1,4 +1,5 @@
 <?php
+
 namespace Syllable\Service;
 
 use PHPUnit\Framework\TestCase;
@@ -46,7 +47,8 @@ class SyllableAlgorithmTest extends TestCase
     /**
      * @dataProvider TestSyllableWordProvider
      */
-    public function testsyllableWord($givenWord, $expectedDashResult, $expectedWithNumbers, $expectedCount){
+    public function testsyllableWord($givenWord, $expectedDashResult, $expectedWithNumbers, $expectedCount)
+    {
         $databaseManager =  $this->createMock(DatabaseManagerInterface::class);
         $userInputReader =  $this->createMock(UserInputReaderInterface::class);
         $patternExtractor = $this->createMock(PatternExtractorInterface::class);
@@ -63,7 +65,7 @@ class SyllableAlgorithmTest extends TestCase
             ->willReturn($patternCollection);
 
 
-        $syllableAlgorithm = new SyllableAlgorithm($databaseManager, $userInputReader, $patternExtractor,$logger);
+        $syllableAlgorithm = new SyllableAlgorithm($databaseManager, $userInputReader, $patternExtractor, $logger);
         $result = $syllableAlgorithm->syllableWord();
 
         $this->assertSame($expectedDashResult, $result->dashResult);
@@ -72,12 +74,13 @@ class SyllableAlgorithmTest extends TestCase
         $this->assertCount($expectedCount, $result->matchedPatterns);
     }
 
-    public function testsyllableWord_conecutive(){
+    public function testsyllableWord_conecutive()
+    {
         $databaseManager =  $this->createMock(DatabaseManagerInterface::class);
         $userInputReader =  $this->createMock(UserInputReaderInterface::class);
         $patternExtractor = $this->createMock(PatternExtractorInterface::class);
         $logger = $this->createMock(LoggerInterface::class);
-        $userInputReader->method("getInputWord")->willReturnOnConsecutiveCalls("Andrius","Andrejus");
+        $userInputReader->method("getInputWord")->willReturnOnConsecutiveCalls("Andrius", "Andrejus");
 
         $patternCollection = new PatternCollection();
         $patternCollection->addPattern(new Pattern('.An3'));
@@ -88,7 +91,7 @@ class SyllableAlgorithmTest extends TestCase
             ->with($this->stringContains("inputfile.txt"))
             ->willReturn($patternCollection);
 
-        $syllableAlgorithm = new SyllableAlgorithm($databaseManager, $userInputReader, $patternExtractor,$logger);
+        $syllableAlgorithm = new SyllableAlgorithm($databaseManager, $userInputReader, $patternExtractor, $logger);
 
         $result = $syllableAlgorithm->syllableWord();
         $this->assertSame("An-drius", $result->dashResult);
@@ -99,7 +102,6 @@ class SyllableAlgorithmTest extends TestCase
         $this->assertSame("An-drejus", $result->dashResult);
         $this->assertSame("An3drejus", $result->withNumbers);
         $this->assertCount(1, $result->matchedPatterns);
-
     }
 
     public function TestSyllableUsingDatabaseProvider()
@@ -111,7 +113,8 @@ class SyllableAlgorithmTest extends TestCase
     /**
      * @dataProvider TestSyllableUsingDatabaseProvider
      */
-    public function testSyllableUsingDatabase($givenWord, $expectedDashResult, $expectedWithNumbers, $expectedCount){
+    public function testSyllableUsingDatabase($givenWord, $expectedDashResult, $expectedWithNumbers, $expectedCount)
+    {
         $databaseManager =  $this->createMock(DatabaseManagerInterface::class);
         $userInputReader =  $this->createMock(UserInputReaderInterface::class);
         $patternExtractor = $this->createMock(PatternExtractorInterface::class);
@@ -125,15 +128,15 @@ class SyllableAlgorithmTest extends TestCase
             ->method("getAllPatterns")
             ->willReturn($patternCollection);
 
-        $relatedPatterns =[];
-        $relatedPatterns[] ='.An3';
-        $relatedPatterns []='dri2us';
+        $relatedPatterns = [];
+        $relatedPatterns[] = '.An3';
+        $relatedPatterns [] = 'dri2us';
 
         $databaseManager->expects($this->atLeast(1))
             ->method("getRelatedPatterns")
             ->willReturn($relatedPatterns);
 
-        $word =[] ;
+        $word = [] ;
         $word["id"] = 1;
         $word["value"] = "Andrius" ;
         $word["syllableValue"] = "An-drius" ;
@@ -142,7 +145,7 @@ class SyllableAlgorithmTest extends TestCase
             ->method("getWord")
             ->willReturn($word);
 
-        $syllableAlgorithm = new SyllableAlgorithm($databaseManager, $userInputReader, $patternExtractor,$logger);
+        $syllableAlgorithm = new SyllableAlgorithm($databaseManager, $userInputReader, $patternExtractor, $logger);
         $result = $syllableAlgorithm->syllableUsingDataBase($givenWord);
 
         $this->assertSame($expectedDashResult, $result->dashResult);
@@ -160,7 +163,8 @@ class SyllableAlgorithmTest extends TestCase
     /**
      * @dataProvider TestSyllableSentenceProvider()
      */
-    public function testsyllableSentence($givenSentence, $expectedDashResult){
+    public function testsyllableSentence($givenSentence, $expectedDashResult)
+    {
         $databaseManager =  $this->createMock(DatabaseManagerInterface::class);
         $userInputReader =  $this->createMock(UserInputReaderInterface::class);
         $patternExtractor = $this->createMock(PatternExtractorInterface::class);
@@ -193,11 +197,9 @@ class SyllableAlgorithmTest extends TestCase
             ->with($this->stringContains("inputfile.txt"))
             ->willReturn($patternCollection);
 
-        $syllableAlgorithm = new SyllableAlgorithm($databaseManager, $userInputReader, $patternExtractor,$logger);
+        $syllableAlgorithm = new SyllableAlgorithm($databaseManager, $userInputReader, $patternExtractor, $logger);
         $result = $syllableAlgorithm->syllableSentence();
 
         $this->assertSame($expectedDashResult, $result);
-
     }
-
 }
