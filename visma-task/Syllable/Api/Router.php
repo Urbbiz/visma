@@ -56,12 +56,12 @@ class Router
                 $callback = $handler['handler'];
             }
         }
-//        if (!$callback) {
-//            header("HTTP/1.0 404 NOT FOUND");
-//            if (!empty($this->notFoundHandler)) {
-//                $callback = $this->notFoundHandler;
-//            }
-//        }
+        if (!$callback) {
+            header("HTTP/1.0 404 NOT FOUND");
+            if (!empty($this->notFoundHandler)) {
+                $callback = $this->notFoundHandler;
+            }
+        }
         call_user_func_array($callback, [
             array_merge($_GET, $_POST)
         ]);
