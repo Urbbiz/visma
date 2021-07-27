@@ -4,6 +4,8 @@ namespace Syllable\Api;
 
 use Syllable\Controllers\WordsController;
 
+
+
 class RoutesDefiner
 {
     private Router $router;
@@ -18,6 +20,7 @@ class RoutesDefiner
 
     public function defineRoutes()
     {
+
 
         $this->router->get('/visma-task/', function () {
             echo 'Home page is here';
@@ -59,6 +62,7 @@ class RoutesDefiner
             if ($this->wordsController->putWord($givenWord, $body["editedWord"]) == false) {
                 header("HTTP/1.1 404 Not Found");
             }
+
         });
 
 
@@ -69,7 +73,7 @@ class RoutesDefiner
 
             if ($uri[2] !== 'words') {
                 header("HTTP/1.1 404 Not Found");
-                exit();
+//                exit();
             }
             $givenWord = null;
             if (isset($uri[3])) {

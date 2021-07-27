@@ -14,3 +14,4 @@ use  Syllable\Api\Router;
 
 $runApp = new Application();
 $runApp->runApp();
+

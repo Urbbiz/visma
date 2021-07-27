@@ -1,0 +1,117 @@
+body {
+    display: inline-block;
+    width: 100%;
+    min-height: 100vh;
+    background: #ddd;
+}
+
+.background {
+    display: inline-block;
+    width: 100vmax;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: auto;
+    filter: saturate(50%);
+    position: fixed;
+    z-index: -100;
+}
+
+.nav {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 120px;
+    background: #ddde;
+    margin-bottom: 6rem;
+}
+
+.table {
+    display: grid;
+    margin: 40px 80px;
+    width: calc(100% - 160px);
+    padding: 0 10px;
+    height: auto;
+    background: linear-gradient(0.2turn, #dddd, #dea1, #eee3);
+    backdrop-filter: blur(16px) contrast(50%) brightness(150%);
+    font-size: 2rem;
+    border: 1px solid transparent;
+    border-radius: 1rem;
+    box-shadow: 1px 1px 10px 4px inset #eee6;
+}
+
+.table h2 {
+    display: inline-block;
+    width: calc(100% - 24px);
+    text-align: center;
+    margin: 12px;
+    text-decoration: underline #3334;
+}
+
+.table .contents {
+    display: grid;
+    width: 100%;
+    padding: 20px 0;
+}
+
+.table .contents span {
+    display: grid;
+    place-items: center;
+    width: 100%;
+}
+
+.table .line {
+    display: grid;
+    width: 100%;
+    padding: 4px;
+}
+
+.table .line:nth-of-type(even) {
+    background-color: #3333;
+    border-radius: 0.2rem;
+}
+
+.line .value {
+    display: grid;
+    place-items: center;
+    padding: 5px;
+    width: 100%;
+    height: auto;
+    font-size: 1.5rem;
+}
+
+.line .actions {
+    display: grid;
+    place-items: center;
+    grid-template-columns: repeat(4, 1fr);
+    width: 92%;
+    margin-left: 4%;
+    height: auto;
+}
+
+.actions label {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: auto;
+    background-color: #3338;
+}
+
+.actions .amount {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: auto;
+}
+
+.actions input.hidden {
+    display: none;
+}
+
+.actions span {
+    display: grid;
+    grid-column: auto / span 4;
+    width: 100%;
+    place-items: center;
+    color: var(--font-error);
+}
