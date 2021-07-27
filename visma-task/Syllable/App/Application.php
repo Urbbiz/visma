@@ -42,14 +42,10 @@ class Application
                 echo"Syllable result: : " . $syllableSentence;
                 break;
             case 2:
-                $startTime = microtime(true); // laiko pradzia
                 $syllableResult = $syllableAlgorithm->syllableWord();
-
-                $endTime = microtime(true); //laiko pabaiga
-                $executionTime = round($endTime - $startTime, 4); // programos veikimo laikas suapvalintas iki 4 skaiciu po kablelio
-                echo "Execution time: $executionTime seconds ";
+                echo "Execution time: $syllableResult->processingDuration seconds ";
                 echo "Syllable result: " . $syllableResult->dashResult . "\n";   // parodo isskiemenuota zodi.
-                $logger->info("Syllable method took{$executionTime} seconds");
+                $logger->info("Syllable method took{$syllableResult->processingDuration} seconds");
                 break;
             case 3:
                 $syllableResult = $syllableAlgorithm->syllableUsingDataBase($userInputReader->getInputWord());

@@ -67,14 +67,13 @@ class SyllableAlgorithm implements SyllableAlgorithmInterface
     {
 
         $givenWord = $this->userInputReader->getInputWord();  // paduoda ivesta zodi
+        $startTime = microtime(true); // laiko pradzia
         $patternsResult = $this->patternExtractor->getPatterns(DIR . "data/inputfile.txt"); // issitraukiam txt failo turini.
 
         $syllableResult = $this->syllable($givenWord, $patternsResult);
-
-//        echo "Syllable result: " . $syllableResult->dashResult . "\n";   // parodo isskiemenuota zodi.
-
         $this->logger->info("Syllable method syllabed word; {$givenWord}.");
-
+        $endTime = microtime(true); //laiko pabaiga
+        $syllableResult->processingDuration = round($endTime - $startTime, 4); // programos veikimo laikas suapvalintas iki 4 skaiciu po kablelio
 
         return $syllableResult;
     }
